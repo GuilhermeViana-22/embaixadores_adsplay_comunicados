@@ -39,6 +39,18 @@ Antes do primeiro uso, o banco precisa ter as tabelas: rode os arquivos de `../s
 
 Os demais usuários são criados do mesmo jeito (papel `people`). Depois disso o Aprovador pode mudar papel e ativar ou desativar pessoas em Configurações, Usuários.
 
+## Publicar na Vercel
+
+O arquivo `vercel.json` (nesta pasta) manda todas as rotas para o `index.html`. Sem ele, abrir ou atualizar o navegador em um endereço como `/ranking-final` dá erro 404 na Vercel, porque o aplicativo troca de tela no navegador e esse arquivo não existe no servidor.
+
+1. Na Vercel, importe o repositório do GitHub.
+2. Em **Root Directory**, escolha a pasta `app` (recomendado). Se você deixar a raiz do repositório, o `vercel.json` da raiz já cuida de instalar e compilar dentro de `app/`.
+3. Em **Settings, Environment Variables**, crie as duas variáveis, nos ambientes Production, Preview e Development:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_PUBLISHABLE_KEY`
+4. Faça o deploy. **Depois de mudar uma variável, faça um novo deploy**: o Vite grava os valores na hora de compilar.
+5. No Supabase, em Authentication, URL Configuration, coloque o endereço da Vercel em **Site URL** e acrescente `https://SEU-DOMINIO/**` em **Redirect URLs**. É isso que faz funcionar o link do e-mail de "Esqueci minha senha".
+
 ## Telas e tabelas
 
 | Tela | Tabelas e funções do banco |

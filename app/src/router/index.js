@@ -9,6 +9,7 @@ import MonthlyRankingView from '@/views/MonthlyRankingView.vue'
 import FinalRankingView from '@/views/FinalRankingView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import LoginView from '@/views/LoginView.vue'
+import ResetPasswordView from '@/views/ResetPasswordView.vue'
 import LoggedOutView from '@/views/LoggedOutView.vue'
 
 // Uma rota por tela. Novas telas entram aqui e em layouts/AppLayout.vue.
@@ -26,6 +27,7 @@ const router = createRouter({
     { path: '/ranking-final', name: 'final-ranking', component: FinalRankingView, meta: { title: 'Ranking final' } },
     { path: '/configuracoes', name: 'settings', component: SettingsView, meta: { title: 'Configurações' } },
     { path: '/entrar', name: 'login', component: LoginView, meta: { title: 'Entrar', bare: true } },
+    { path: '/redefinir-senha', name: 'reset-password', component: ResetPasswordView, meta: { title: 'Nova senha', bare: true } },
     { path: '/saiu', name: 'logged-out', component: LoggedOutView, meta: { title: 'Sessão encerrada', bare: true } },
   ],
 })
@@ -34,7 +36,7 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const session = useSessionStore()
   await session.init()
-  if (!session.logado && to.name !== 'login' && to.name !== 'logged-out') return { name: 'login' }
+  if (!session.logado && !['login', 'logged-out', 'reset-password'].includes(to.name)) return { name: 'login' }
   if (session.logado && to.name === 'login') return { path: '/criacao' }
 })
 

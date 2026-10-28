@@ -68,10 +68,17 @@ export const useSessionStore = defineStore('session', () => {
     profile.value = null
   }
 
+  // Envia o e-mail com o link de recuperação. O endereço de volta precisa estar na lista "Redirect URLs" do Supabase.
+  async function recuperarSenha(email) {
+    if (!supabase) throw new Error(MENSAGEM_SEM_CONFIG)
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/redefinir-senha` })
+    if (error) throw friendly(error)
+  }
+
   async function trocarSenha(nova) {
     const { error } = await supabase.auth.updateUser({ password: nova })
     if (error) throw friendly(error)
   }
 
-  return { user, profile, ready, erro, logado, isAdmin, can, init, entrar, sair, trocarSenha, carregarPerfil }
+  return { user, profile, ready, erro, logado, isAdmin, can, init, entrar, sair, recuperarSenha, trocarSenha, carregarPerfil }
 })

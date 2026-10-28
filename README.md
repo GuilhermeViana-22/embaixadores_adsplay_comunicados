@@ -49,3 +49,12 @@ Os valores ficam na tabela `pontuacao_regras`.
 - Todas as tabelas têm proteção por linha (RLS). Quem não tem login não lê nem grava nada.
 - A chave que aparece em `login/login-comunicados.html` é a **chave pública** do Supabase, feita para ficar em páginas. A proteção real são as regras do banco.
 - Nunca coloque senhas, tokens ou a chave de serviço (`service_role`) neste repositório.
+
+## Publicar na Vercel
+
+O repositório tem dois `vercel.json`, os dois com a regra que manda todas as rotas para o `index.html` (sem ela, atualizar a página em um endereço interno dá erro 404):
+
+- `vercel.json` (raiz): vale quando a Vercel é deixada na raiz do repositório. Ele instala e compila dentro de `app/`.
+- `app/vercel.json`: vale quando em **Root Directory** da Vercel você escolhe `app` (recomendado).
+
+Nos dois casos, crie as variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` em Settings, Environment Variables, e **faça um novo deploy** depois de mudar qualquer uma. Passo a passo em `app/README.md`.
