@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Embaixadores Adsplay - Comunicados</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#f8f5fd;--sf:#fff;--tx:#2a2140;--mu:#6b6380;--ln:#e4dcf3;--pr:#b794e8;--on:#2a1d4a;--soft:#efe7fb;--ok:#1f7a54;--bad:#b3362b;--r:16px;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1426;--sf:#241c34;--tx:#f2edfa;--mu:#a99fc2;--ln:#3a2f52;--pr:#c7a7f2;--on:#241338;--soft:#32264a;--ok:#5fd3a0;--bad:#ff8b80;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1a1426;--sf:#241c34;--tx:#f2edfa;--mu:#a99fc2;--ln:#3a2f52;--pr:#c7a7f2;--on:#241338;--soft:#32264a;--ok:#5fd3a0;--bad:#ff8b80;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 "Geist",system-ui,-apple-system,"Segoe UI",sans-serif}
+h1{font-size:24px;font-weight:650;margin:0 0 4px;letter-spacing:-.01em}h2{font-size:17px;font-weight:600;margin:24px 0 10px}h3{font-size:16px;font-weight:600;margin:0}
+p{margin:0}.mu{color:var(--mu)}.sm{font-size:13px}
+.app{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}
+aside{background:var(--sf);border-right:1px solid var(--ln);padding:20px 14px}
+aside .brand{font-weight:700;font-size:18px;padding:0 10px 14px}
+nav{display:flex;flex-direction:column;gap:2px}
+nav button{text-align:left;border:0;background:transparent;color:inherit;padding:9px 12px;border-radius:12px;cursor:pointer;white-space:nowrap}
+nav button:hover{background:var(--soft)}nav button[aria-selected="true"]{background:var(--soft);font-weight:600;box-shadow:inset 3px 0 0 var(--pr)}
+.side-foot{margin-top:18px;padding:0 10px;display:grid;gap:10px}
+main{padding:24px clamp(14px,3vw,36px) 48px;max-width:1040px;width:100%}
+@media(max-width:780px){.app{grid-template-columns:minmax(0,1fr)}aside{border-right:0;border-bottom:1px solid var(--ln);padding:12px}nav{flex-direction:row;overflow-x:auto}.side-foot{grid-template-columns:1fr 1fr}}
+label{display:block;font-size:13px;color:var(--mu);margin-bottom:4px}
+input,select,textarea,button{font:inherit;color:inherit}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--ln);border-radius:12px;background:var(--sf)}
+input[type=file]{padding:7px}textarea{min-height:96px;resize:vertical}input[readonly]{background:var(--soft)}
+.box{background:var(--sf);border:1px solid var(--ln);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+.btn{background:var(--pr);color:var(--on);border:0;padding:9px 16px;border-radius:12px;cursor:pointer;font-weight:600}
+.btn.sec{background:transparent;color:var(--tx);border:1px solid var(--ln);font-weight:500}.btn.bad{background:transparent;color:var(--bad);border:1px solid var(--bad);font-weight:500}.btn.xs{padding:3px 10px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-top:10px}.row>div{flex:1 1 170px}
+.post{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px}.post.noart{grid-template-columns:minmax(0,1fr)}
+@media(max-width:620px){.post{grid-template-columns:1fr}}
+.thumb{width:100%;aspect-ratio:1;border-radius:12px;background:var(--soft);object-fit:cover;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:12px;text-align:center;padding:8px;border:1px solid var(--ln)}
+@media(max-width:620px){.thumb{max-width:150px}}
+.tag{display:inline-block;font-size:12px;padding:2px 10px;border-radius:999px;border:1px solid var(--ln);color:var(--mu);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)}.tag.bad{color:var(--bad);border-color:var(--bad)}.tag.hi{background:var(--pr);color:var(--on);border-color:var(--pr)}
+.txt{white-space:pre-wrap;margin:6px 0 10px}
+.note{border-left:3px solid var(--pr);padding:4px 12px;margin:0 0 14px;color:var(--mu);font-size:14px}
+.warn{border:1px solid var(--bad);color:var(--bad);border-radius:12px;padding:8px 12px;margin-bottom:12px;font-size:14px}
+.empty{color:var(--mu);padding:14px 2px}
+.hist{list-style:none;margin:8px 0 0;padding:0;border:1px solid var(--ln);border-radius:12px}.hist li{padding:7px 12px;border-bottom:1px solid var(--ln);font-size:14px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}.hist li:last-child{border:0}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:10px 8px;border-bottom:1px solid var(--ln);text-align:center}th{font-size:12px;line-height:1.25;font-weight:600;color:var(--mu);vertical-align:bottom}td{white-space:nowrap}th:nth-child(2),td:nth-child(2){text-align:left;width:100%;min-width:130px;white-space:normal}@media(max-width:560px){th,td{padding:8px 5px}td{font-size:13px}}th:first-child,td:first-child{text-align:left;color:var(--mu);font-weight:600}tr:last-child td{border:0}table thead th:nth-child(n){text-align:center}
+.tot{font-weight:700;font-size:16px}.bar{height:5px;background:var(--soft);border-radius:5px;margin-top:5px;max-width:220px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pr)}
+.off{color:var(--mu)}.off .bar i{background:var(--mu)}.scroll{overflow-x:auto}details summary{cursor:pointer;color:var(--mu);font-size:14px;margin-top:10px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}.sub{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}.sub button{border:1px solid var(--ln);background:var(--sf);border-radius:999px;padding:6px 14px;cursor:pointer}.sub button[aria-pressed="true"]{background:var(--pr);color:var(--on);border-color:var(--pr);font-weight:600}
+[hidden]{display:none!important}
+</style></head><body>
+<div class="app">
+<aside>
+ <div class="brand">Embaixadores Adsplay</div>
+ <nav id="nav" role="tablist" aria-label="Abas"></nav>
+ <div class="side-foot">
+  <div><span class="tag hi" id="perfil">…</span><p class="sm mu" id="quem" style="margin-top:6px"></p></div>
+  <div><label for="tema">Aparência</label><select id="tema"><option value="auto">Sistema</option><option value="light">Claro</option><option value="dark">Escuro</option></select></div>
+ </div>
+</aside>
+<main>
+<div id="aviso"></div>
+
+<section id="p-criacao">
+ <h1>Criação de posts</h1><p class="mu" style="margin-bottom:16px">Anexe a arte, escreva o texto e escolha o canal e a data. O post segue para aprovação.</p>
+ <div class="box" id="f-criacao-box"><h2 style="margin-top:0">Novo comunicado</h2>
+  <div class="grid">
+   <div class="full"><label for="c-tit">Título</label><input id="c-tit"></div>
+   <div class="full"><label for="c-txt">Texto do comunicado</label><textarea id="c-txt"></textarea></div>
+   <div><label for="c-img">Arte (opcional)</label><input id="c-img" type="file" accept="image/*"></div>
+   <div><label for="c-dat">Data prevista para divulgação</label><input id="c-dat" type="date"></div>
+   <div><label for="c-can">Canal de divulgação</label><select id="c-can"></select></div>
+   <div><label for="c-aut">Postando como</label><input id="c-aut" readonly></div>
+   <div class="full"><button class="btn" data-act="criar">Enviar para aprovação</button> <span class="sm mu" id="c-msg" role="status"></span></div>
+  </div></div>
+ <h2>Aguardando aprovação</h2><div id="l-pend"></div>
+</section>
+
+<section id="p-programados" hidden>
+ <h1>Posts programados</h1><p class="mu" style="margin-bottom:16px">Posts aprovados, com data e horário. Posts sem arte são agendados no Slack ao aprovar e saem sozinhos no horário. Posts com arte são publicados pelo Claude, por pedido no chat.</p>
+ <div id="l-prog"></div><div id="w-canc" hidden><h2>Cancelados</h2><div id="l-canc"></div></div>
+</section>
+
+<section id="p-publicados" hidden>
+ <h1>Posts publicados</h1><p class="mu" style="margin-bottom:12px">Comentários e reações de cada post. Só contam as interações feitas em até 24 horas úteis (sem sábado e domingo) depois da publicação.</p>
+ <div class="box" id="slackbar"></div>
+ <div id="l-pub"></div>
+</section>
+
+<section id="p-externos" hidden>
+ <h1>Post Externo</h1><p class="mu" style="margin-bottom:16px">Posts do Instagram e do LinkedIn. Cada post vale 50 pontos e soma no mês da data de publicação, pelo nome completo do colaborador.</p>
+ <div class="box"><div class="grid">
+  <div><label for="e-red">Rede</label><select id="e-red"><option>Instagram</option><option>LinkedIn</option></select></div>
+  <div><label for="e-nom">Nome do post</label><input id="e-nom"></div>
+  <div><label for="e-dat">Data da publicação</label><input id="e-dat" type="date"></div>
+  <div><label for="e-col">Colaborador (nome completo)</label><select id="e-col"></select></div>
+  <div class="full"><label for="e-img">Print do post</label><input id="e-img" type="file" accept="image/*"></div>
+  <div class="full"><button class="btn" data-act="externo">Registrar post externo</button> <span class="sm mu" id="e-msg" role="status"></span></div>
+ </div></div>
+ <h2>Posts registrados</h2><div id="l-ext"></div>
+</section>
+
+<section id="p-acoes" hidden>
+ <h1>Ações de people</h1><p class="mu" style="margin-bottom:16px">Estas pontuações somam só no ranking final. Os participantes são reconhecidos pelo nome completo da lista de colaboradores ativos.</p>
+ <div class="sub" id="sub-acao"></div>
+ <div id="f-acao"></div>
+ <h2>Registros</h2><div id="l-acao"></div>
+</section>
+
+<section id="p-mes" hidden>
+ <h1>Ranking do mês</h1><p class="mu" style="margin-bottom:16px">Posts do Slack (depois do prazo de 24 horas úteis) e posts externos do mês. Ações de people não entram aqui.</p>
+ <div class="box" style="max-width:300px"><label for="mes">Mês</label><select id="mes"></select></div>
+ <div id="l-mes"></div>
+</section>
+
+<section id="p-final" hidden>
+ <h1>Ranking final</h1><p class="mu" style="margin-bottom:16px">Soma de todos os meses (Slack e posts externos) mais as ações de people, com treinamento, destaque do quarter e ação social em colunas separadas. Quem saiu da lista de ativos fica no fim, em cinza.</p>
+ <div id="l-fin"></div>
+</section>
+
+<section id="p-config" hidden>
+ <h1>Configurações</h1><p class="mu" style="margin-bottom:16px">Lista de colaboradores ativos e canais do Slack. Só o Aprovador altera.</p>
+ <div class="box" id="l-roster"></div>
+ <h2>Canais do Slack</h2><p class="sm mu" style="margin-bottom:10px">Defina de qual canal do Slack é cada opção de divulgação.</p>
+ <div id="l-cfg"></div>
+</section>
+</main></div>
+
+<script>
+/* ---------- utilitários ---------- */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nz=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');
+const pad=n=>String(n).padStart(2,'0'),nowIso=()=>new Date().toISOString();
+const fmtD=d=>d?d.split('-').reverse().join('/'):'—';
+const fmtDT=i=>{if(!i)return'—';const d=new Date(i);return d.toLocaleDateString('pt-BR')+' '+pad(d.getHours())+':'+pad(d.getMinutes())};
+const mkey=i=>{const d=new Date(i);return d.getFullYear()+'-'+pad(d.getMonth()+1)};
+const mlabel=k=>{const s=new Date(k+'-15T12:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});return s[0].toUpperCase()+s.slice(1)};
+const toInput=d=>{const x=new Date(d-d.getTimezoneOffset()*6e4);return x.toISOString().slice(0,16)};
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+function addBH(start,hours){let t=new Date(start),left=hours*36e5;while(left>0){const d=t.getDay();if(d===0||d===6){t.setDate(t.getDate()+(d===6?2:1));t.setHours(0,0,0,0);continue}const e=new Date(t);e.setHours(24,0,0,0);const u=Math.min(left,e-t);t=new Date(+t+u);left-=u}return t}
+const CHAN=[['geral','Comunicados gerais'],['clt','CLT'],['teste','Teste (#rhtas)']];
+const POINTS={externo:50,treino:50,destaque:100,social:50};
+const ACAO={treino:'Treinamento',destaque:'Destaque do quarter',social:'Ação social do quarter'};
+const TABS=[['criacao','Criação de posts'],['programados','Posts programados'],['publicados','Posts publicados'],['externos','Post Externo'],['acoes','Ações de people'],['mes','Ranking do mês'],['final','Ranking final'],['config','Configurações']];
+
+/* ---------- estado ---------- */
+const S={db:null,assets:null,mcp:null,perm:null,me:null,admin:false,write:false,tab:'criacao',month:null,sub:'treino',
+ posts:[],approvals:{},pubs:{},snaps:{},slackUsers:{},manual:[],externos:[],acoes:[],roster:null,channels:{},draft:{},syncing:false,syncMsg:'',pendingRoster:null,rosterMsg:'',confirmCancel:null};
+const isAdmin=()=>S.admin,canWrite=()=>S.write;
+const chLabel=k=>(CHAN.find(c=>c[0]===k)||[])[1]||k;
+const chSlack=k=>S.channels[k]?.id?('#'+S.channels[k].name):null;
+function status(p){if(S.pubs[p.id])return'publicado';return S.approvals[p.id]?.status||'pendente'}
+
+/* ---------- elenco de colaboradores (com histórico de períodos) ---------- */
+const curM=()=>mkey(new Date());
+const periodsOf=r=>r.periods||[{from:'',to:r.active===false?'0000-00':''}];
+const isActiveNow=r=>{const p=periodsOf(r);return p.length>0&&p[p.length-1].to===''};
+const inMonth=(r,m)=>periodsOf(r).some(p=>(!p.from||p.from<=m)&&(!p.to||m<=p.to));
+function roster(){const L=(S.roster?.list||[]),byE=new Map(),byN=new Map();L.forEach(r=>{if(r.email)byE.set(r.email.toLowerCase(),r);byN.set(nz(r.name),r)});return{L,byE,byN,act:L.filter(isActiveNow)}}
+const byEmail=(R,e)=>e?(R.byE.get(String(e).toLowerCase())||null):null;
+const byName=(R,n)=>n?(R.byN.get(nz(n))||null):null;
+function diffRoster(list){const R=roster(),L=list.filter(x=>x.active!==false),used=new Set(),d={novos:[],voltam:[],saem:[],total:L.length,primeira:!R.L.length};
+ L.forEach(e=>{const ex=(e.email&&R.byE.get(e.email))||R.byN.get(nz(e.name));if(!ex)d.novos.push(e.name);else{used.add(ex);if(!isActiveNow(ex))d.voltam.push(e.name)}});
+ R.L.forEach(r=>{if(isActiveNow(r)&&!used.has(r))d.saem.push(r.name)});return d}
+function applyRoster(list){const R=roster(),cur=curM(),first=!R.L.length,L=list.filter(x=>x.active!==false),used=new Set(),idx=new Map(R.L.map((r,i)=>[r,i])),
+ out=R.L.map(r=>({name:r.name,email:r.email||'',periods:periodsOf(r).map(p=>({...p}))}));
+ L.forEach(e=>{const ex=(e.email&&R.byE.get(e.email))||R.byN.get(nz(e.name));
+  if(ex){const i=idx.get(ex);if(used.has(i))return;used.add(i);const o=out[i];o.name=e.name;if(e.email)o.email=e.email;if(!isActiveNow(ex))o.periods.push({from:cur,to:''})}
+  else out.push({name:e.name,email:e.email||'',periods:[{from:first?'':cur,to:''}]})});
+ R.L.forEach((r,i)=>{if(!used.has(i)&&isActiveNow(r)){const p=out[i].periods;p[p.length-1].to=cur}});
+ return out.map(o=>({...o,active:isActiveNow(o)}))}
+
+/* ---------- prazo e pontos ---------- */
+const deadline=p=>addBH(new Date(S.pubs[p.id].publishedAt),24);
+const closed=p=>S.pubs[p.id]&&Date.now()>=+deadline(p);
+function interactions(p){
+ const pub=S.pubs[p.id],start=new Date(pub.publishedAt),end=deadline(p),snap=S.snaps[p.id]||{},out=[];
+ (snap.comments||[]).forEach(c=>{const at=new Date(c.at);out.push({kind:'comentario',name:c.name,email:c.email||S.slackUsers[c.slackId]?.email||'',when:c.at,ok:at>=start&&at<=end,src:'slack'})});
+ (snap.reactions||[]).forEach(r=>{const at=new Date(r.seenAt);out.push({kind:'reacao',name:r.name,email:r.email||S.slackUsers[r.slackId]?.email||'',when:r.seenAt,ok:at<=end,src:'slack'})});
+ S.manual.filter(m=>m.postId===p.id).forEach(m=>{const at=new Date(m.at);out.push({kind:m.type,name:m.name,email:m.email||'',when:m.at,ok:at>=start&&at<=end,src:'manual',id:m.id})});
+ return out.sort((a,b)=>a.when<b.when?-1:1)}
+function ranking(month,final){
+ const R=roster(),rows=new Map(R.L.map(r=>[r,{r,s:0,e:0,a:0,tr:0,ds:0,so:0}])),add=(r,m,k,v)=>{if(r&&inMonth(r,m))rows.get(r)[k]+=v};
+ S.posts.filter(p=>closed(p)&&(final||mkey(S.pubs[p.id].publishedAt)===month)).forEach(p=>{const m=mkey(S.pubs[p.id].publishedAt),seen=new Set();interactions(p).forEach(i=>{if(!i.ok)return;const r=byEmail(R,i.email);if(!r)return;const k=r.email+i.kind;if(seen.has(k))return;seen.add(k);add(r,m,'s',1)})});
+ S.externos.filter(x=>final||mkey(x.date)===month).forEach(x=>add(byName(R,x.colab),mkey(x.date),'e',POINTS.externo));
+ if(final)S.acoes.forEach(a=>{const m=mkey(a.date||a.createdAt);(a.participants||[]).forEach(n=>{const q=byName(R,n);add(q,m,'a',POINTS[a.type]);add(q,m,{treino:'tr',destaque:'ds',social:'so'}[a.type],POINTS[a.type])})});
+ let out=[...rows.values()].map(x=>({...x,t:x.s+x.e+x.a,act:isActiveNow(x.r)}));
+ if(!final)out=out.filter(x=>inMonth(x.r,month));
+ return out.sort((a,b)=>(final&&a.act!==b.act)?(a.act?-1:1):(b.t-a.t||a.r.name.localeCompare(b.r.name,'pt-BR')))}
+
+/* ---------- leitura de planilhas ---------- */
+async function readSheet(file){const wb=XLSX.read(await file.arrayBuffer(),{type:'array',codepage:65001});return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:false,defval:''})}
+const HEAD=/^(nome( completo)?|name|e-?mail( corporativo)?|colaboradores?|participantes?|presen[cç]a|assinatura|cargo|[áa]rea|setor|status|situa[cç][aã]o|ativo|#)$/i;
+function parseRoster(rows){
+ const cell=c=>String(c??'').trim();let hi=rows.findIndex(r=>r.some(c=>/e-?mail/i.test(cell(c))));let ci=-1,ni=-1,si=-1,start=0;
+ if(hi>=0){const h=rows[hi].map(cell);ci=h.findIndex(x=>/e-?mail/i.test(x));ni=h.findIndex(x=>/^(nome|name|colaborador)/i.test(x));si=h.findIndex(x=>/status|situa|ativo/i.test(x));start=hi+1}
+ const out=[],seen=new Set();let noMail=0;
+ for(const r of rows.slice(start)){const c=r.map(cell).filter(Boolean);if(!c.length||c.every(x=>HEAD.test(x)))continue;
+  const email=(ci>=0?cell(r[ci]):c.find(x=>/^\S+@\S+\.\S+$/.test(x)))||'';
+  const name=(ni>=0?cell(r[ni]):c.find(x=>x!==email&&/[a-zà-ú]{2}/i.test(x)&&!/@/.test(x)))||'';
+  if(!name)continue;const k=(email||nz(name)).toLowerCase();if(seen.has(k))continue;seen.add(k);
+  const st=si>=0?cell(r[si]):'';if(!email)noMail++;
+  out.push({name,email:email.toLowerCase(),active:!/inativ|desligad|^n[aã]o$/i.test(st)})}
+ return{list:out,noMail}}
+function parseNames(rows,R){
+ const matched=[],unmatched=[],seen=new Set();
+ for(const r of rows){const c=r.map(x=>String(x??'').trim()).filter(Boolean);if(!c.length||c.every(x=>HEAD.test(x)))continue;
+  let hit=null;for(const x of c){const m=byName(R,x)||byEmail(R,x);if(m){hit=m;break}}
+  if(hit){if(!seen.has(hit.name)){seen.add(hit.name);matched.push(hit.name)}}
+  else{const t=c.find(x=>/[a-zà-ú]{2}/i.test(x)&&!/@/.test(x)&&!HEAD.test(x));if(t&&!seen.has(nz(t))){seen.add(nz(t));unmatched.push(t)}}}
+ return{matched,unmatched}}
+
+/* ---------- Slack ---------- */
+async function slack(tool,input){const r=await S.mcp.callTool('Slack',tool,input,{cache:false});let t=(r.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');if(!t&&typeof r.payload==='string')t=r.payload;if(t.trim().startsWith('{"result"')){try{t=JSON.parse(t).result}catch(e){}}return t}
+function parseReplies(t){const out=[];t.split(/--- Reply \d+ of \d+ ---/).slice(1).forEach(p=>{const f=p.match(/From:\s*(.+?)(?:\s*<([^>]+)>)?\s*\((U[A-Z0-9]+)\)/),ts=p.match(/Message TS:\s*(\d+\.\d+)/);if(f&&ts)out.push({name:f[1].trim(),email:(f[2]||'').toLowerCase(),slackId:f[3],at:new Date(parseFloat(ts[1])*1000).toISOString()})});return out}
+function parseReactions(t){const m=new Map();t.split('\n').forEach(line=>{const i=line.indexOf('\u2014');if(!/^:[^:]+:/.test(line)||i<0)return;const re=/([^,()]+?)\s*\((U[A-Z0-9]+)\)/g;let x;const tail=line.slice(i+1);while((x=re.exec(tail)))m.set(x[2],x[1].trim())});return[...m].map(([slackId,name])=>({slackId,name}))}
+async function syncPost(p){
+ const pub=S.pubs[p.id],ch=pub.slackChannelId,ts=pub.slackTs,errors=[];let comments=[],rx=[];
+ try{comments=parseReplies(await slack('slack_read_thread',{channel_id:ch,message_ts:ts,response_format:'detailed'}))}catch(e){errors.push('comentários: '+(e.message||e.code))}
+ try{rx=parseReactions(await slack('slack_get_reactions',{channel_id:ch,message_ts:ts}))}catch(e){errors.push('reações: '+(e.message||e.code))}
+ const known={...S.slackUsers};comments.forEach(c=>{if(c.email&&!known[c.slackId]){known[c.slackId]={email:c.email,name:c.name};S.db.doc('slackUsers/'+c.slackId).set(known[c.slackId]).catch(()=>{})}});
+ for(const r of rx){if(known[r.slackId])continue;try{const t=await slack('slack_read_user_profile',{user_id:r.slackId,response_format:'concise'});const em=(t.match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/)||[])[0]||'';known[r.slackId]={email:em.toLowerCase(),name:r.name};await S.db.doc('slackUsers/'+r.slackId).set(known[r.slackId])}catch(e){errors.push('perfil de '+r.name)}}
+ const prev=(S.snaps[p.id]?.reactions)||[],now=nowIso(),map=new Map(prev.map(x=>[x.slackId,x]));
+ rx.forEach(r=>{if(!map.has(r.slackId))map.set(r.slackId,{slackId:r.slackId,name:r.name,email:known[r.slackId]?.email||'',seenAt:now});else if(!map.get(r.slackId).email&&known[r.slackId]?.email)map.get(r.slackId).email=known[r.slackId].email});
+ const keepC=errors.some(e=>e.startsWith('comentários'))?(S.snaps[p.id]?.comments||[]):comments;
+ await S.db.doc('snaps/'+p.id).set({comments:keepC,reactions:[...map.values()],updatedAt:now,errors});
+ return errors}
+const needsSync=p=>{const pub=S.pubs[p.id];if(!pub?.slackTs||!pub.slackChannelId)return false;const s=S.snaps[p.id];return!s||new Date(s.updatedAt)<=deadline(p)};
+async function resolveScheduled(){
+ if(!S.mcp||!isAdmin()||S.resolving)return;
+ const due=S.posts.filter(p=>!S.pubs[p.id]&&S.approvals[p.id]?.status==='programado'&&S.approvals[p.id]?.slackScheduledId&&new Date(S.approvals[p.id].scheduledAt)<=new Date(Date.now()-60000));
+ if(!due.length)return;S.resolving=true;
+ try{for(const ch of [...new Set(due.map(p=>S.approvals[p.id].slackChannelId))]){
+   const t=await slack('slack_read_channel',{channel_id:ch,limit:30,response_format:'detailed'});
+   const msgs=[...t.matchAll(/=== Message from [^\n]*? at [^\n]*? ===\s*\nMessage TS:\s*(\d+\.\d+)\n([^\n]*)/g)].map(m=>({ts:m[1],first:m[2].replace(/[*_]/g,'').trim()}));
+   for(const p of due.filter(x=>S.approvals[x.id].slackChannelId===ch)){const want=+new Date(S.approvals[p.id].scheduledAt)/1000;
+    const hit=msgs.find(m=>Math.abs(parseFloat(m.ts)-want)<=600&&m.first.startsWith(p.title.replace(/[*_]/g,'').trim().slice(0,20)));
+    if(hit)await S.db.doc('pubs/'+p.id).set({publishedAt:new Date(parseFloat(hit.ts)*1000).toISOString(),slackChannelId:ch,slackTs:hit.ts,by:'agendamento no Slack'})}}}
+ catch(e){}
+ S.resolving=false}
+async function syncAll(force){
+ if(!S.mcp||S.syncing)return;await resolveScheduled();const L=S.posts.filter(p=>S.pubs[p.id]&&(force||needsSync(p)));if(!L.length){S.syncMsg=force?'Nada para atualizar.':'';return render()}
+ S.syncing=true;S.syncMsg='Lendo o Slack…';render();let errs=[];
+ try{for(const p of L)errs.push(...(await syncPost(p)).map(e=>p.title+': '+e));S.syncMsg=errs.length?'Atualizado com avisos: '+errs.join('; '):'Atualizado do Slack às '+fmtDT(nowIso())+'.'}
+ catch(e){S.syncMsg=e.code==='consent_required'||e.code==='not_granted'?'Permita o acesso ao Slack para ler comentários e reações.':'Não consegui ler o Slack: '+(e.message||e.code)}
+ S.syncing=false;render()}
+
+/* ---------- renderização ---------- */
+function put(sel,html){const e=$(sel);if(!e)return;if(e.contains(document.activeElement)&&/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))return;e.innerHTML=html}
+const thumb=(url,name)=>url?`<img class="thumb" src="${esc(url)}" alt="Arte: ${esc(name)}">`:`<div class="thumb">${esc(name||'sem arte')}</div>`;
+function card(p,status,body){const st=status;return`<div class="box post${p.artUrl?'':' noart'}" data-id="${p.id}">${p.artUrl?thumb(p.artUrl,p.artName):''}<div style="min-width:0"><div class="pills" style="align-items:center"><h3>${esc(p.title)}</h3><span class="tag">${esc(chLabel(p.channel))}</span>${st||''}</div><p class="sm mu">${esc(p.authorName)}, divulgação prevista em ${fmtD(p.plannedDate)}</p><p class="txt">${esc(p.text)}</p>${body||''}</div></div>`}
+function rosterBox(){const R=roster(),r=S.roster,pr=S.pendingRoster,L=r?.log||[];
+ const sorted=[...R.L].sort((a,b)=>(isActiveNow(b)-isActiveNow(a))||a.name.localeCompare(b.name,'pt-BR'));
+ const st=x=>{if(isActiveNow(x))return'<span class="tag ok">ativo</span>';const p=periodsOf(x),l=p[p.length-1].to;return`<span class="tag">inativo${/^\d{4}-\d{2}$/.test(l)&&l!=='0000-00'?', último mês: '+mlabel(l):''}</span>`};
+ const names=a=>a.map(esc).join(', ');
+ return`<h2 style="margin-top:0">Colaboradores ativos</h2><p class="sm mu">${R.L.length?`${R.act.length} ativos e ${R.L.length-R.act.length} inativos.`+(r?.fileName?` Última lista: ${esc(r.fileName)} em ${fmtDT(r.at)}.`:''):'Nenhuma lista cadastrada: sem ela o ranking fica vazio.'} Ao cadastrar uma lista nova, quem não estiver nela passa a inativo: fica em cinza no fim do ranking final e mantém o histórico dos meses em que estava ativo.</p>`+
+ `<div class="row"><div><label>Nova lista (.xlsx ou .csv, com nome completo e e-mail)</label><input type="file" class="r-file" accept=".xlsx,.xls,.csv"></div><button class="btn" data-act="roster">Ler lista</button></div><p class="sm mu" role="status" style="margin-top:8px">${esc(S.rosterMsg)}</p>`+
+ (pr?`<div class="box" style="background:var(--soft);margin:12px 0 0"><p><b>${pr.diff.total}</b> pessoas na lista “${esc(pr.fileName)}”.${pr.diff.primeira?' É a primeira lista: todos entram desde o início do histórico.':''}</p>${pr.diff.novos.length&&!pr.diff.primeira?`<p class="sm" style="margin-top:6px">Novos, entram a partir deste mês: ${names(pr.diff.novos)}</p>`:''}${pr.diff.voltam.length?`<p class="sm" style="margin-top:6px">Voltam a ficar ativos: ${names(pr.diff.voltam)}</p>`:''}${pr.diff.saem.length?`<p class="sm" style="margin-top:6px;color:var(--bad)">Passam a inativos, por não estarem na lista nova (${pr.diff.saem.length}): ${names(pr.diff.saem)}</p>`:'<p class="sm" style="margin-top:6px">Ninguém passa a inativo.</p>'}${pr.noMail?`<p class="sm" style="margin-top:6px;color:var(--bad)">${pr.noMail} sem e-mail: não pontuam no Slack.</p>`:''}<div class="row"><button class="btn" data-act="rconf">Confirmar atualização</button><button class="btn sec" data-act="rcancel">Cancelar</button></div></div>`:'')+
+ (sorted.length?`<details><summary>Ver colaboradores cadastrados (${sorted.length})</summary><ul class="hist">${sorted.map(x=>`<li><span style="flex:1">${esc(x.name)} <span class="mu sm">${esc(x.email||'sem e-mail')}</span></span>${st(x)}<button class="btn sec xs" data-act="toggle" data-i="${R.L.indexOf(x)}">${isActiveNow(x)?'Desativar':'Ativar'}</button></li>`).join('')}</ul></details>`:'')+
+ (L.length?`<details><summary>Histórico de atualizações da lista</summary><ul class="hist">${L.map(l=>`<li>${fmtDT(l.at)}, ${esc(l.fileName)} por ${esc(l.by)}: ${l.novos} novos, ${l.saem} passaram a inativos, ${l.voltam} voltaram</li>`).join('')}</ul></details>`:'')}
+function rankTable(rows,fin){const R=roster();if(!R.L.length)return'<div class="box empty">Cadastre a planilha de colaboradores ativos em Configurações para ver o ranking.</div>';if(!rows.length)return'<div class="box empty">Nenhum colaborador ativo neste período.</div>';const mx=Math.max(1,...rows.map(x=>x.t));
+ return`<div class="box scroll"><table><thead><tr><th>#</th><th>Colaborador</th><th>Posts do Slack</th><th>Posts externos</th>${fin?'<th>Treinamento</th><th>Destaque do quarter</th><th>Ação social</th>':''}<th>Total</th></tr></thead><tbody>${rows.map((x,i)=>`<tr class="${fin&&!x.act?'off':''}"><td>${i+1}</td><td>${esc(x.r.name)}${fin&&!x.act?' <span class="tag">inativo</span>':''}<div class="bar"><i style="width:${x.t/mx*100}%"></i></div></td><td>${x.s}</td><td>${x.e}</td>${fin?`<td>${x.tr}</td><td>${x.ds}</td><td>${x.so}</td>`:''}<td class="tot">${x.t}</td></tr>`).join('')}</tbody></table></div>`}
+function cancelBlock(p,a){if(!isAdmin())return'';
+ if(S.confirmCancel!==p.id)return'<div class="row"><button class="btn bad xs" data-act="cancelar">Cancelar post</button></div>';
+ const future=new Date(a.scheduledAt)>new Date();
+ return`<div class="box" style="background:var(--soft);margin:10px 0 0"><p><b>Cancelar este post?</b></p>${a.slackScheduledId?`<p class="sm" style="margin-top:6px;color:var(--bad)">${future?'Este post já está agendado no Slack, e o Slack não permite cancelar por aqui. Ao confirmar, ele sai da lista desta página, mas continua agendado no Slack até você excluir a mensagem em “Rascunhos e enviados”, na parte de agendadas. Se não excluir lá, ele será publicado no horário.':'O horário deste post já passou. Ele pode já ter sido publicado no Slack; confira o canal antes de cancelar.'}</p>`:'<p class="sm" style="margin-top:6px">Nada foi agendado no Slack para este post. Ele só sai da lista de programados.</p>'}<div class="row"><button class="btn bad" data-act="cancelarok">Confirmar cancelamento</button><button class="btn sec" data-act="cancelarno">Voltar</button></div></div>`}
+function slackBar(){const m=S.mcp;return`<div class="row" style="margin:0;align-items:center"><div style="flex:3 1 260px"><p class="sm">${m?'Leitura do Slack disponível nesta conta.':'Seu acesso ao Slack não está disponível aqui. Conecte o Slack no Claude e abra a página de novo.'}</p><p class="sm mu" role="status">${esc(S.syncMsg)}</p></div>${m?`<button class="btn" data-act="sync" ${S.syncing?'disabled':''}>Atualizar do Slack</button>`:''}</div><p class="sm mu" style="margin-top:8px">Comentários trazem o horário exato. As reações não: o Slack não informa quando foram dadas. Por isso uma reação só conta se esta página a viu até o fim do prazo. Abra a página perto do fim do prazo de cada post.</p>`}
+
+function render(){
+ if(S.tab==='config'&&!isAdmin())S.tab='criacao';
+ $('#nav').innerHTML=TABS.filter(t=>t[0]!=='config'||isAdmin()).map(([k,n])=>`<button role="tab" aria-selected="${k===S.tab}" data-tab="${k}">${n}</button>`).join('');
+ TABS.forEach(([k])=>{$('#p-'+k).hidden=k!==S.tab});
+ const R=roster();
+ $('#perfil').textContent=S.admin?'Aprovador':S.write?'People':'Somente leitura';
+ $('#quem').textContent=S.me?S.me.name:'';$('#c-aut').value=S.me?.name||'';
+ $('#f-criacao-box').hidden=!canWrite();
+ const opts=(sel,html)=>{const e=$(sel),v=e.value;e.innerHTML=html;if([...e.options].some(o=>o.value===v))e.value=v};
+ opts('#c-can','<option value="">Escolha o canal</option>'+CHAN.map(([k,n])=>`<option value="${k}">${n}${S.channels[k]?.id?'':' (canal do Slack ainda não definido)'}</option>`).join(''));
+ const people='<option value="">Escolha pelo nome completo</option>'+[...R.act].sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')).map(r=>`<option>${esc(r.name)}</option>`).join('');
+ opts('#e-col',people);
+
+ const pend=S.posts.filter(p=>['pendente','devolvido'].includes(status(p))).sort((a,b)=>b.createdAt<a.createdAt?-1:1);
+ put('#l-pend',pend.length?pend.map(p=>{const st=status(p),a=S.approvals[p.id];
+  const own=S.me&&p.authorId===S.me.id;
+  if(st==='devolvido')return card(p,'<span class="tag bad">Devolvido</span>',`<p class="sm"><b>Motivo:</b> ${esc(a.reason)}</p>${(own||isAdmin())?'<div class="row"><button class="btn bad xs" data-act="excluir">Excluir</button></div>':''}`);
+  return card(p,'<span class="tag">Aguardando o aprovador</span>',isAdmin()?`<div class="row"><div><label>Data e horário da divulgação</label><input type="datetime-local" class="q-hora" value="${p.plannedDate?p.plannedDate+'T09:00':''}"></div><div><label>Motivo (se devolver)</label><input class="q-mot"></div></div><div class="row"><button class="btn" data-act="aprovar">Aprovar e programar</button><button class="btn sec" data-act="devolver">Devolver</button></div><p class="sm" style="color:var(--bad)" role="alert" data-err></p>`:(own?'<div class="row"><button class="btn bad xs" data-act="excluir">Excluir</button></div>':''))}).join(''):'<div class="empty">Nada aguardando aprovação.</div>');
+
+ const prog=S.posts.filter(p=>status(p)==='programado').sort((a,b)=>S.approvals[a.id].scheduledAt<S.approvals[b.id].scheduledAt?-1:1);
+ put('#l-prog',prog.length?prog.map(p=>{const a=S.approvals[p.id],cs=chSlack(p.channel),req=`Claude, publique no Slack o post “${p.title}” (id ${p.id}) do sistema Embaixadores Adsplay, no canal ${cs||chLabel(p.channel)}.`;
+  return card(p,`<span class="tag ok">${a.slackScheduledId?'Agendado no Slack para ':'Aprovado para '}${fmtDT(a.scheduledAt)}</span>${!a.slackScheduledId&&p.artUrl?'<span class="tag">Com arte: publicar pelo Claude</span>':''}`,`<p class="sm mu">Canal no Slack: ${cs?esc(cs):'ainda não definido (em Configurações)'}</p>`+(a.slackScheduledId?'<p class="sm">Agendado no Slack: sai sozinho no horário aprovado, mesmo com esta página fechada. Para mudar ou cancelar, use as mensagens agendadas no próprio Slack.</p>':isAdmin()?`<details><summary>Como publicar</summary><p class="sm" style="margin:8px 0">Peça ao Claude no chat, com a arte e o texto. Se publicar à mão no Slack, cole o link da mensagem para o sistema acompanhar comentários e reações.</p><label>Pedido para o Claude</label><input readonly value="${esc(req)}" onclick="this.select()"><div class="row"><div><label>Link da mensagem publicada no Slack</label><input class="q-link" placeholder="https://…slack.com/archives/…"></div><button class="btn" data-act="regpub">Registrar publicação</button></div><p class="sm" style="color:var(--bad)" role="alert" data-err></p></details><div class="row"><button class="btn sec xs" data-act="voltar">Voltar para aprovação</button></div>`:'')+cancelBlock(p,a))}).join(''):'<div class="empty">Nenhum post programado. Os posts aparecem aqui depois que o aprovador aprova.</div>');
+
+ const canc=S.posts.filter(p=>status(p)==='cancelado').sort((a,b)=>(S.approvals[b.id].cancelledAt||'')<(S.approvals[a.id].cancelledAt||'')?-1:1);
+ $('#w-canc').hidden=!canc.length;
+ put('#l-canc',canc.map(p=>{const a=S.approvals[p.id],pend=a.slackScheduledId&&new Date(a.scheduledAt)>new Date();
+  return card(p,`<span class="tag bad">Cancelado</span>${pend?'<span class="tag bad">Remover no Slack</span>':''}`,`<p class="sm mu">Era para ${fmtDT(a.scheduledAt)}. Cancelado por ${esc(a.cancelledBy||'—')} em ${fmtDT(a.cancelledAt)}.</p>${pend?'<p class="sm" style="color:var(--bad);margin-top:6px">Ainda está agendado no Slack. Exclua a mensagem em “Rascunhos e enviados”, na parte de agendadas, para ela não ser publicada.</p>':''}${isAdmin()?`<div class="row">${a.slackScheduledId?'':'<button class="btn sec xs" data-act="voltar">Voltar para aprovação</button>'}<button class="btn bad xs" data-act="excluir">Excluir de vez</button></div>`:''}`)}).join(''));
+ const pub=S.posts.filter(p=>S.pubs[p.id]).sort((a,b)=>S.pubs[b.id].publishedAt<S.pubs[a.id].publishedAt?-1:1);
+ put('#slackbar',slackBar());
+ put('#l-pub',pub.length?pub.map(p=>{const I=interactions(p),c=I.filter(i=>i.kind==='comentario'&&i.ok).length,r=I.filter(i=>i.kind==='reacao'&&i.ok).length,cl=closed(p),snap=S.snaps[p.id],pb=S.pubs[p.id];
+  const name=i=>{const m=byEmail(R,i.email);return m?m.name:i.name};
+  return card(p,`<span class="tag">Publicado em ${fmtDT(pb.publishedAt)}</span><span class="tag ${cl?'ok':'hi'}">${cl?'Pontos contabilizados':'Prazo até '+fmtDT(deadline(p))}</span>`,
+  `<p class="sm"><b>${c}</b> ${c===1?'comentário':'comentários'} e <b>${r}</b> ${r===1?'reação':'reações'} no prazo${snap?'':' (ainda não lido do Slack)'}</p>${(snap?.errors||[]).length?`<p class="sm" style="color:var(--bad)">Avisos da última leitura: ${esc(snap.errors.join('; '))}</p>`:''}`+
+  (I.length?`<ul class="hist">${I.map(i=>`<li><b>${esc(name(i))}</b><span class="mu">${i.kind==='comentario'?'comentou em':i.src==='slack'?'reação vista em':'reagiu em'} ${fmtDT(i.when)}</span><span class="tag ${i.ok?'ok':'bad'}">${i.ok?'no prazo':'fora do prazo'}</span>${!byEmail(R,i.email)&&R.L.length?'<span class="tag bad">e-mail fora da lista</span>':''}${i.src==='manual'&&canWrite()?`<button class="btn sec xs" style="margin-left:auto" data-act="rmman" data-mid="${i.id}">Remover</button>`:''}</li>`).join('')}</ul>`:'<p class="sm mu" style="margin-top:8px">Ninguém interagiu ainda.</p>')+
+  (canWrite()&&R.act.length?`<details><summary>Lançar interação à mão</summary><div class="row"><div><label>Colaborador</label><select class="q-col">${[...R.act].filter(x=>x.email).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')).map(x=>`<option value="${esc(x.email)}">${esc(x.name)}</option>`).join('')}</select></div><div><label>Tipo</label><select class="q-tipo"><option value="comentario">Comentário</option><option value="reacao">Reação</option></select></div><div><label>Quando</label><input type="datetime-local" class="q-em" value="${toInput(new Date())}"></div><button class="btn" data-act="man">Lançar</button></div></details>`:''))}).join(''):'<div class="empty">Nenhum post publicado ainda.</div>');
+
+ const ex=[...S.externos].sort((a,b)=>b.date<a.date?-1:1);
+ put('#l-ext',ex.length?ex.map(x=>{const rp=byName(R,x.colab),ok=!!(rp&&inMonth(rp,mkey(x.date)));return`<div class="box post" data-id="${x.id}">${thumb(x.imgUrl,x.imgName)}<div><div class="pills" style="align-items:center"><h3>${esc(x.name)}</h3><span class="tag">${esc(x.rede)}</span></div><p class="sm mu">${esc(x.colab)}, publicado em ${fmtD(x.date)}</p><p style="margin:8px 0">${ok?`<span class="tag ok">+${POINTS.externo} pontos em ${mlabel(mkey(x.date))}</span>`:'<span class="tag bad">Fora da lista ou inativo no mês: não pontua</span>'}</p>${(isAdmin()||(S.me&&x.byId===S.me.id))?'<button class="btn bad xs" data-act="rmext">Excluir</button>':''}</div></div>`}).join(''):'<div class="empty">Nenhum post externo registrado.</div>');
+
+ $('#sub-acao').innerHTML=Object.entries(ACAO).map(([k,n])=>`<button data-sub="${k}" aria-pressed="${k===S.sub}">${n}</button>`).join('');
+ const fk=S.sub+(canWrite()?'1':'0');if($('#f-acao').dataset.t!==fk){const t=S.sub,q='Q'+Math.ceil((new Date().getMonth()+1)/3)+' '+new Date().getFullYear();$('#f-acao').dataset.t=fk;$('#f-acao').innerHTML=canWrite()?`<div class="box"><h3 style="margin-bottom:10px">${ACAO[t]}: ${POINTS[t]} pontos por participante</h3><div class="grid"><div><label for="a-nom">${t==='treino'?'Nome do treinamento':'Quarter'}</label><input id="a-nom" ${t==='treino'?'':`value="${q}"`}></div>${t==='treino'?'<div><label for="a-dat">Data do treinamento</label><input id="a-dat" type="date"></div>':''}<div class="full"><label for="a-file">${t==='treino'?'Lista de presença':t==='destaque'?'Lista de destaques':'Planilha de participantes'} (.xlsx ou .csv)</label><input id="a-file" type="file" accept=".xlsx,.xls,.csv"></div><div class="full" id="a-prev"></div><div class="full"><button class="btn" data-act="acao">Registrar</button> <span class="sm mu" id="a-msg" role="status"></span></div></div></div>`:'<p class="sm mu">Seu perfil não registra ações de people.</p>'}
+ put('#l-acao',(()=>{const L=S.acoes.filter(a=>a.type===S.sub).sort((a,b)=>b.createdAt<a.createdAt?-1:1);return L.length?L.map(a=>{const am=mkey(a.date||a.createdAt),ok=(a.participants||[]).filter(n=>{const q=byName(R,n);return q&&inMonth(q,am)}).length;return`<div class="box" data-id="${a.id}"><div class="pills" style="align-items:center"><h3>${esc(a.name)}</h3><span class="tag ok">${ok*POINTS[a.type]} pontos no total</span></div><p class="sm mu">${a.date?fmtD(a.date)+', ':''}${ok} de ${(a.participants||[]).length} participantes pontuam, ${POINTS[a.type]} pontos cada. Registrado por ${esc(a.by)}${a.fileUrl?`. <a href="${esc(a.fileUrl)}" target="_blank" rel="noopener">${esc(a.fileName)}</a>`:''}</p><p class="sm" style="margin-top:6px">${(a.participants||[]).map(n=>esc(n)+((q=>q&&inMonth(q,am)?'':' (fora da lista ou inativo no período)')(byName(R,n)))).join(', ')}</p>${(a.unmatched||[]).length?`<p class="sm" style="color:var(--bad);margin-top:6px">Nomes da lista que não bateram com os colaboradores: ${a.unmatched.map(esc).join(', ')}</p>`:''}${(isAdmin()||(S.me&&a.byId===S.me.id))?'<div class="row"><button class="btn bad xs" data-act="rmacao">Excluir</button></div>':''}</div>`}).join(''):'<div class="empty">Nenhum registro ainda.</div>'})());
+
+ const months=[...new Set(S.posts.filter(p=>S.pubs[p.id]).map(p=>mkey(S.pubs[p.id].publishedAt)).concat(S.externos.map(x=>mkey(x.date)),mkey(new Date())))].sort().reverse();if(!S.month||!months.includes(S.month))S.month=months[0];
+ opts('#mes',months.map(m=>`<option value="${m}">${mlabel(m)}</option>`).join(''));$('#mes').value=S.month;
+ put('#l-mes',rankTable(ranking(S.month,false),false));put('#l-fin',rankTable(ranking(null,true),true));
+ if(isAdmin()){const h=rosterBox();if(h!==S._rb){S._rb=h;$('#l-roster').innerHTML=h}}
+ if(isAdmin())put('#l-cfg',CHAN.map(([k,n])=>{const c=S.channels[k];return`<div class="box" data-k="${k}"><h3>${n}</h3><p class="sm mu" style="margin:4px 0 8px">${c?.id?'Canal no Slack: #'+esc(c.name)+' ('+esc(c.id)+')':'Canal do Slack ainda não definido.'}</p><div class="row" style="margin-top:0"><div><label>Buscar canal no Slack</label><input class="q-ch" placeholder="ex.: comunicados"></div><button class="btn sec" data-act="buscar" ${S.mcp?'':'disabled'}>Buscar</button></div><div class="res"></div></div>`}).join('')+(S.mcp?'':'<p class="warn">A busca depende do acesso ao Slack nesta conta.</p>'))}
+
+/* ---------- ações ---------- */
+async function up(file){if(!S.assets)throw new Error('Esta conta não pode anexar arquivos.');const r=await S.assets.upload(file);return{id:r.id,url:r.url}}
+const msg=(sel,t)=>{const e=$(sel);if(e)e.textContent=t};
+document.addEventListener('click',async e=>{
+ const tb=e.target.closest('[data-tab]');if(tb){S.tab=tb.dataset.tab;try{location.hash=S.tab}catch(x){}return render()}
+ const sb=e.target.closest('[data-sub]');if(sb){S.sub=sb.dataset.sub;$('#f-acao').dataset.t='';return render()}
+ const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,box=b.closest('[data-id]'),id=box?.dataset.id,p=id&&S.posts.find(x=>x.id===id),q=s=>box?.querySelector(s),err=t=>{const x=box?.querySelector('[data-err]');if(x)x.textContent=t};
+ try{
+ if(a==='criar'){const t=$('#c-tit').value.trim(),x=$('#c-txt').value.trim(),d=$('#c-dat').value,c=$('#c-can').value,f=$('#c-img').files[0];
+  if(!t||!x||!d||!c)return msg('#c-msg','Preencha título, texto, data e canal. A arte é opcional.');msg('#c-msg','Enviando…');b.disabled=true;
+  const art=f?await up(f):{url:'',id:''},pid=uid('p');await S.db.doc('posts/'+pid).set({title:t,text:x,plannedDate:d,channel:c,artUrl:art.url,artId:art.id,artName:f?f.name:'',authorId:S.me?.id||'',authorName:S.me?.name||'',createdAt:nowIso()});
+  ['#c-tit','#c-txt','#c-dat','#c-img'].forEach(s=>$(s).value='');msg('#c-msg','Enviado para aprovação.')}
+ if(a==='aprovar'){const h=q('.q-hora').value;if(!h)return err('Defina a data e o horário da divulgação.');const at=new Date(h);let extra={};b.disabled=true;
+  if(!p.artUrl){const ch=S.channels[p.channel];
+   if(!ch?.id)return err('Defina o canal do Slack desta opção em Configurações antes de aprovar.');
+   if(!S.mcp)return err('Para agendar no Slack, conecte o Slack no Claude e abra a página de novo.');
+   if(+at<Date.now()+3*60000)return err('Para agendar no Slack, escolha um horário com pelo menos 3 minutos de antecedência.');
+   if(+at>Date.now()+110*864e5)return err('O Slack agenda no máximo 120 dias à frente.');
+   const t=await slack('slack_schedule_message',{channel_id:ch.id,message:'**'+p.title+'**\n\n'+p.text,post_at:Math.floor(+at/1000)});
+   const sid=(t.match(/Scheduled Message ID:\s*(\S+)/)||[])[1];
+   if(!/scheduled successfully/i.test(t)||!sid)return err('O Slack não confirmou o agendamento: '+t.slice(0,160));
+   extra={slackScheduledId:sid,slackChannelId:ch.id}}
+  await S.db.doc('approvals/'+id).set({status:'programado',scheduledAt:at.toISOString(),reason:'',by:S.me?.name||'',at:nowIso(),...extra})}
+ if(a==='devolver'){const m=q('.q-mot').value.trim();if(!m)return err('Escreva o motivo da devolução.');await S.db.doc('approvals/'+id).set({status:'devolvido',reason:m,by:S.me?.name||'',at:nowIso()})}
+ if(a==='voltar')await S.db.doc('approvals/'+id).delete();
+ if(a==='cancelar'){S.confirmCancel=id;return render()}
+ if(a==='cancelarno'){S.confirmCancel=null;return render()}
+ if(a==='cancelarok'){const ap=S.approvals[id];S.confirmCancel=null;await S.db.doc('approvals/'+id).set({...ap,status:'cancelado',cancelledAt:nowIso(),cancelledBy:S.me?.name||''})}
+ if(a==='excluir'){await S.db.doc('posts/'+id).delete();if(isAdmin())S.db.doc('approvals/'+id).delete().catch(()=>{})}
+ if(a==='regpub'){const m=String(q('.q-link').value).match(/archives\/([A-Z0-9]+)\/p(\d{10})(\d{6})/);if(!m)return err('Cole o link completo da mensagem do Slack (Copiar link da mensagem).');await S.db.doc('pubs/'+id).set({publishedAt:new Date(+m[2]*1000).toISOString(),slackChannelId:m[1],slackTs:m[2]+'.'+m[3],by:S.me?.name||''});syncAll(false)}
+ if(a==='sync')await syncAll(true);
+ if(a==='man'){const em=q('.q-col').value,r=roster().byE.get(em),em2=q('.q-em').value;if(!em||!em2)return;await S.db.doc('manual/'+uid('m')).set({postId:id,email:em,name:r?.name||em,type:q('.q-tipo').value,at:new Date(em2).toISOString(),by:S.me?.name||''})}
+ if(a==='rmman')await S.db.doc('manual/'+b.dataset.mid).delete();
+ if(a==='externo'){const n=$('#e-nom').value.trim(),d=$('#e-dat').value,c=$('#e-col').value,f=$('#e-img').files[0];if(!n||!d||!c||!f)return msg('#e-msg','Preencha o nome, a data, o colaborador e anexe o print.');msg('#e-msg','Enviando…');b.disabled=true;
+  const im=await up(f);await S.db.doc('externos/'+uid('e')).set({rede:$('#e-red').value,name:n,date:d,colab:c,imgUrl:im.url,imgId:im.id,imgName:f.name,by:S.me?.name||'',byId:S.me?.id||'',createdAt:nowIso()});['#e-nom','#e-dat','#e-img'].forEach(s=>$(s).value='');msg('#e-msg','Registrado: +'+POINTS.externo+' pontos no mês da publicação.')}
+ if(a==='rmext')await S.db.doc('externos/'+id).delete();
+ if(a==='acao'){const t=S.sub,n=$('#a-nom').value.trim(),d=$('#a-dat')?.value||'',f=$('#a-file').files[0],pr=S.draft[t];
+  if(!n||(t==='treino'&&!d)||!f||!pr)return msg('#a-msg',t==='treino'?'Informe nome e data e anexe a lista.':'Informe o quarter e anexe a lista.');
+  if(!pr.matched.length)return msg('#a-msg','Nenhum nome da lista bateu com os colaboradores ativos.');msg('#a-msg','Registrando…');b.disabled=true;
+  let fu='';try{fu=(await up(f)).url}catch(x){}
+  await S.db.doc('acoes/'+uid('a')).set({type:t,name:n,date:d,participants:pr.matched,unmatched:pr.unmatched,fileName:f.name,fileUrl:fu,by:S.me?.name||'',byId:S.me?.id||'',createdAt:nowIso()});$('#a-file').value='';$('#a-prev').innerHTML='';S.draft[t]=null;msg('#a-msg','Registrado.')}
+ if(a==='rmacao')await S.db.doc('acoes/'+id).delete();
+ if(a==='roster'){const f=$('#l-roster .r-file').files[0];if(!f){S.rosterMsg='Anexe a planilha.';return render()}
+  const r=parseRoster(await readSheet(f));if(!r.list.length){S.rosterMsg='Não encontrei colaboradores. Use uma linha por pessoa, com nome completo e e-mail.';return render()}
+  S.pendingRoster={list:r.list,noMail:r.noMail,fileName:f.name,diff:diffRoster(r.list)};S.rosterMsg='';render()}
+ if(a==='rcancel'){S.pendingRoster=null;S.rosterMsg='';render()}
+ if(a==='rconf'){const pr=S.pendingRoster;if(!pr)return;const list=applyRoster(pr.list),log=[{at:nowIso(),fileName:pr.fileName,by:S.me?.name||'',novos:pr.diff.novos.length,saem:pr.diff.saem.length,voltam:pr.diff.voltam.length},...(S.roster?.log||[])].slice(0,20);
+  await S.db.doc('roster/main').set({list,fileName:pr.fileName,at:nowIso(),by:S.me?.name||'',log});S.rosterMsg=`Lista cadastrada: ${pr.diff.total} pessoas, ${pr.diff.novos.length} novos, ${pr.diff.saem.length} passaram a inativos, ${pr.diff.voltam.length} voltaram.`;S.pendingRoster=null;render()}
+ if(a==='toggle'){const cur=curM(),L=roster().L.map(r=>({name:r.name,email:r.email||'',periods:periodsOf(r).map(x=>({...x}))})),r=L[+b.dataset.i];if(isActiveNow(r))r.periods[r.periods.length-1].to=cur;else r.periods.push({from:cur,to:''});L.forEach(x=>x.active=isActiveNow(x));await S.db.doc('roster/main').set({...S.roster,list:L})}
+ if(a==='buscar'){const k=b.closest('[data-k]'),kw=k.querySelector('.q-ch').value.trim().split(/\s+/).filter(Boolean);if(!kw.length)return;const t=await slack('slack_search_channels',{keywords:kw,natural_language_query:kw.join(' '),channel_types:'public_channel,private_channel',response_format:'concise'});
+  const res=[...t.matchAll(/#([\w\-._]+) \((C[A-Z0-9]+)\)/g)].map(m=>({name:m[1],id:m[2]}));k.querySelector('.res').innerHTML=res.length?`<div class="pills" style="margin-top:10px">${res.map(r=>`<button class="btn sec xs" data-act="usar" data-cid="${r.id}" data-cn="${esc(r.name)}">#${esc(r.name)}</button>`).join('')}</div>`:'<p class="sm mu" style="margin-top:8px">Nenhum canal encontrado.</p>'}
+ if(a==='usar'){const k=b.closest('[data-k]').dataset.k;await S.db.doc('config/channels').set({...S.channels,[k]:{id:b.dataset.cid,name:b.dataset.cn}})}
+ }catch(x){const t='Não deu certo: '+(x.message||x.code||x);if(box?.querySelector('[data-err]'))err(t);else{const m=a==='criar'?'#c-msg':a==='externo'?'#e-msg':a==='acao'?'#a-msg':null;if(m)msg(m,t);else alert(t)}}
+ finally{if(b.disabled&&['criar','externo','acao','aprovar'].includes(a))b.disabled=false}
+});
+document.addEventListener('change',async e=>{
+ if(e.target.id==='mes'){S.month=e.target.value;return render()}
+ if(e.target.id==='a-file'){const f=e.target.files[0],t=S.sub,pv=$('#a-prev');S.draft[t]=null;pv.innerHTML='';if(!f)return;
+  try{const r=parseNames(await readSheet(f),roster());S.draft[t]=r;pv.innerHTML=`<p class="sm"><b>${r.matched.length}</b> nomes reconhecidos na lista de colaboradores ativos.</p>${r.unmatched.length?`<p class="sm" style="color:var(--bad)">${r.unmatched.length} nomes não bateram e ficarão de fora: ${r.unmatched.map(esc).join(', ')}</p>`:''}`}catch(x){pv.innerHTML='<p class="sm" style="color:var(--bad)">Não consegui ler esta planilha.</p>'}}
+ if(e.target.id==='tema'){const v=e.target.value;if(v==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',v);try{localStorage.setItem('tema',v)}catch(x){}}
+});
+try{const v=localStorage.getItem('tema');if(v&&v!=='auto'){document.documentElement.setAttribute('data-theme',v);$('#tema').value=v}}catch(e){}
+function fromHash(){const h=(location.hash||'').slice(1);if(TABS.some(t=>t[0]===h))S.tab=h}
+addEventListener('hashchange',()=>{fromHash();render()});fromHash();
+setInterval(()=>{if(S.db)render()},60000);
+
+/* ---------- início ---------- */
+(async()=>{
+ render();
+ try{
+  const C=window.claude;if(!C)throw 0;
+  const [U,db,assets,mcp,perm]=await Promise.all(['user','db','assets','mcp','permissions'].map(n=>C.use(n).catch(()=>null)));
+  S.assets=assets;S.mcp=mcp;S.perm=perm;
+  if(U){S.me=await U.me();S.admin=await U.canEdit();const w=await U.can('data.write');S.write=S.admin||w!==false}
+  if(!db){$('#aviso').innerHTML='<p class="warn">Não consegui abrir os dados. Abra o link logado na sua conta do Claude e com acesso à página.</p>';return render()}
+  S.db=db;render();
+  const sub=(c,f)=>db.collection(c).onSnapshot(s=>{f(s.docs);render()},()=>{});
+  const map=(docs)=>Object.fromEntries(docs.map(d=>[d.id,d.data()]));
+  sub('posts',d=>{S.posts=d.map(x=>({...x.data(),id:x.id}));setTimeout(()=>autoSync(),300)});
+  sub('approvals',d=>S.approvals=map(d));sub('pubs',d=>{S.pubs=map(d);setTimeout(()=>autoSync(),300)});
+  sub('snaps',d=>S.snaps=map(d));sub('slackUsers',d=>S.slackUsers=map(d));
+  sub('manual',d=>S.manual=d.map(x=>({...x.data(),id:x.id})));
+  sub('externos',d=>S.externos=d.map(x=>({...x.data(),id:x.id})));
+  sub('acoes',d=>S.acoes=d.map(x=>({...x.data(),id:x.id})));
+  sub('roster',d=>S.roster=d.find(x=>x.id==='main')?.data()||null);
+  sub('config',d=>S.channels=d.find(x=>x.id==='channels')?.data()||{});
+ }catch(e){$('#aviso').innerHTML='<p class="warn">Esta página precisa ser aberta pelo Claude, com a sua conta.</p>'}
+})();
+async function autoSync(){if(!S.mcp||!S.perm||!S.posts.length)return;try{if(await S.perm.state('mcp')==='granted')syncAll(false)}catch(e){}}
+</script></body></html>

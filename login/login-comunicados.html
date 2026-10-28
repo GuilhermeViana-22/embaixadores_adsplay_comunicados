@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Embaixadores Adsplay - Entrar</title>
+<style>
+:root{--bg:#f8f5fd;--sf:#fff;--tx:#2a2140;--mu:#6b6380;--ln:#e4dcf3;--pr:#b794e8;--on:#2a1d4a;--soft:#efe7fb;--ok:#1f7a54;--bad:#b3362b;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#1a1426;--sf:#241c34;--tx:#f2edfa;--mu:#a99fc2;--ln:#3a2f52;--pr:#c7a7f2;--on:#241338;--soft:#32264a;--ok:#5fd3a0;--bad:#ff8b80;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.card{width:100%;max-width:400px;background:var(--sf);border:1px solid var(--ln);border-radius:20px;padding:28px}
+h1{font-size:22px;font-weight:650;margin:0 0 4px;letter-spacing:-.01em}
+p{margin:0}.mu{color:var(--mu)}.sm{font-size:13px}
+label{display:block;font-size:13px;color:var(--mu);margin:16px 0 4px}
+input{width:100%;padding:10px 12px;border:1px solid var(--ln);border-radius:12px;background:var(--bg);color:inherit;font:inherit}
+.pw{position:relative}.pw input{padding-right:78px}
+.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--mu);font:inherit;font-size:13px;padding:4px 8px;border-radius:8px;cursor:pointer}
+.btn{width:100%;margin-top:20px;background:var(--pr);color:var(--on);border:0;border-radius:12px;padding:11px 16px;font:inherit;font-weight:600;cursor:pointer}
+.btn.sec{background:transparent;color:var(--tx);border:1px solid var(--ln);font-weight:500;margin-top:10px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
+.msg{min-height:20px;margin-top:14px;font-size:14px}.msg.bad{color:var(--bad)}.msg.ok{color:var(--ok)}
+.tag{display:inline-block;font-size:12px;padding:2px 10px;border-radius:999px;background:var(--pr);color:var(--on);font-weight:600}
+.who{display:flex;align-items:center;gap:12px;margin:18px 0}
+.av{width:44px;height:44px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-weight:700;flex:none}
+details{margin-top:18px;border-top:1px solid var(--ln);padding-top:14px}
+summary{cursor:pointer;color:var(--mu);font-size:14px}
+.status{margin-top:18px;padding-top:12px;border-top:1px solid var(--ln);font-size:12px;color:var(--mu);display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mu);flex:none}.dot.ok{background:var(--ok)}.dot.bad{background:var(--bad)}
+[hidden]{display:none!important}
+</style></head><body>
+<main class="card">
+ <p class="sm mu" style="margin-bottom:6px">Embaixadores Adsplay</p>
+
+ <form id="v-login" novalidate>
+  <h1>Entrar</h1><p class="mu">Use o e-mail e a senha cadastrados.</p>
+  <label for="email">E-mail</label>
+  <input id="email" type="email" autocomplete="username" inputmode="email">
+  <label for="senha">Senha</label>
+  <div class="pw"><input id="senha" type="password" autocomplete="current-password"><button type="button" id="ver" aria-pressed="false">Mostrar</button></div>
+  <button class="btn" id="entrar" type="submit">Entrar</button>
+  <p class="msg" id="msg-login" role="status" aria-live="polite"></p>
+  <div class="status"><span class="dot" id="dot"></span><span id="conexao">Verificando a conexão com o servidor…</span></div>
+ </form>
+
+ <section id="v-perfil" hidden>
+  <h1>Você está dentro</h1>
+  <div class="who"><div class="av" id="ini"></div><div><p id="nome" style="font-weight:600"></p><p class="sm mu" id="mail"></p></div></div>
+  <p><span class="tag" id="papel"></span></p>
+  <p class="msg" id="msg-perfil" role="status" aria-live="polite"></p>
+  <details>
+   <summary>Trocar a senha</summary>
+   <form id="f-senha" novalidate>
+    <label for="nova">Nova senha (mínimo de 8 caracteres)</label>
+    <input id="nova" type="password" autocomplete="new-password">
+    <label for="conf">Repita a nova senha</label>
+    <input id="conf" type="password" autocomplete="new-password">
+    <button class="btn" id="salvar" type="submit">Salvar nova senha</button>
+    <p class="msg" id="msg-senha" role="status" aria-live="polite"></p>
+   </form>
+  </details>
+  <button class="btn sec" id="sair" type="button">Sair</button>
+ </section>
+</main>
+
+<script>
+/* Projeto do Supabase. A chave pública pode ficar na página; quem protege os dados são as regras do banco. */
+var SUPABASE_URL = 'https://tyzlatsqvzmffjyaaebe.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_KI6n6xkdxquHCiaOlPH1Zg_Xhqu-Wmq';
+var PAPEIS = { aprovador: 'Aprovador', people: 'People' };
+var CHAVE_SESSAO = 'adsplay-comunicados-sessao';
+
+function $(s) { return document.querySelector(s); }
+function tela(nome) { $('#v-login').hidden = nome !== 'login'; $('#v-perfil').hidden = nome !== 'perfil'; }
+function aviso(sel, texto, tipo) { var e = $(sel); e.textContent = texto || ''; e.className = 'msg' + (tipo ? ' ' + tipo : ''); }
+
+/* Guarda a sessão no navegador; se ele não permitir, guarda só até fechar a página. */
+var memoria = null;
+function lerSessao() { try { var t = localStorage.getItem(CHAVE_SESSAO); return t ? JSON.parse(t) : memoria; } catch (e) { return memoria; } }
+function gravarSessao(s) { memoria = s; try { if (s) localStorage.setItem(CHAVE_SESSAO, JSON.stringify(s)); else localStorage.removeItem(CHAVE_SESSAO); } catch (e) { /* segue sem salvar */ } }
+
+/* Fala com o Supabase. Se a conexão falhar, devolve um erro com o código "sem_conexao". */
+async function chamar(caminho, opcoes) {
+  opcoes = opcoes || {};
+  var cab = { apikey: SUPABASE_KEY, Accept: 'application/json' };
+  if (opcoes.corpo) cab['Content-Type'] = 'application/json';
+  if (opcoes.token) cab.Authorization = 'Bearer ' + opcoes.token;
+  var resp;
+  try {
+    resp = await fetch(SUPABASE_URL + caminho, { method: opcoes.metodo || 'GET', headers: cab, body: opcoes.corpo ? JSON.stringify(opcoes.corpo) : undefined });
+  } catch (e) { var er = new Error('sem_conexao'); er.codigo = 'sem_conexao'; throw er; }
+  var texto = await resp.text(), dados = null;
+  try { dados = texto ? JSON.parse(texto) : null; } catch (e) { dados = null; }
+  if (!resp.ok) { var e2 = new Error((dados && (dados.msg || dados.message || dados.error_description)) || ('HTTP ' + resp.status)); e2.codigo = (dados && (dados.error_code || dados.code)) || ''; e2.status = resp.status; throw e2; }
+  return dados;
+}
+
+function traduzir(erro) {
+  var m = String((erro && erro.message) || '').toLowerCase(), c = String((erro && erro.codigo) || '').toLowerCase();
+  if (c === 'sem_conexao') return 'Não consegui falar com o servidor. Confira a internet. Se você abriu este arquivo dentro do Claude, baixe-o e abra direto no navegador.';
+  if (c === 'invalid_credentials' || m.indexOf('invalid login credentials') >= 0) return 'E-mail ou senha incorretos.';
+  if (c === 'email_not_confirmed' || m.indexOf('email not confirmed') >= 0) return 'Este e-mail ainda não foi confirmado.';
+  if (c === 'over_request_rate_limit' || m.indexOf('rate limit') >= 0 || m.indexOf('too many') >= 0 || erro.status === 429) return 'Muitas tentativas. Aguarde um pouco e tente de novo.';
+  if (c === 'same_password' || m.indexOf('different from the old') >= 0) return 'A nova senha precisa ser diferente da atual.';
+  if (c === 'weak_password' || m.indexOf('weak') >= 0) return 'Essa senha é fraca. Use no mínimo 8 caracteres, misturando letras e números.';
+  if (erro && erro.status === 401) return 'Sessão expirada. Entre de novo.';
+  return 'Não deu certo (' + (erro && (erro.codigo || erro.status) || 'erro') + '). Tente de novo em instantes.';
+}
+
+async function verificarConexao() {
+  try { await chamar('/auth/v1/health'); $('#dot').className = 'dot ok'; $('#conexao').textContent = 'Servidor acessível.'; }
+  catch (e) { $('#dot').className = 'dot bad'; $('#conexao').textContent = 'Sem conexão com o servidor. Se você abriu este arquivo dentro do Claude, baixe-o e abra direto no navegador.'; }
+}
+
+async function renovar(sessao) {
+  var d = await chamar('/auth/v1/token?grant_type=refresh_token', { metodo: 'POST', corpo: { refresh_token: sessao.refresh_token } });
+  var nova = { access_token: d.access_token, refresh_token: d.refresh_token, expires_at: d.expires_at || (Math.floor(Date.now() / 1000) + (d.expires_in || 3600)), user: d.user };
+  gravarSessao(nova); return nova;
+}
+
+async function mostrarPerfil(sessao) {
+  aviso('#msg-perfil', '');
+  var user = sessao.user || {};
+  $('#mail').textContent = user.email || '';
+  var linha = null, falha = null;
+  try {
+    var caminho = '/rest/v1/users?select=nome,email,papel,ativo&id=eq.' + encodeURIComponent(user.id);
+    var lista;
+    try { lista = await chamar(caminho, { token: sessao.access_token }); }
+    catch (e) { if (e.status === 401 && sessao.refresh_token) { sessao = await renovar(sessao); lista = await chamar(caminho, { token: sessao.access_token }); } else { throw e; } }
+    linha = lista && lista[0] ? lista[0] : null;
+  } catch (e) { falha = e; }
+  var nome = (linha && linha.nome) || String(user.email || '').split('@')[0];
+  $('#nome').textContent = nome;
+  $('#ini').textContent = nome.split(/\s+/).map(function (p) { return p.charAt(0); }).slice(0, 2).join('').toUpperCase();
+  if (falha) { $('#papel').textContent = 'Perfil indisponível'; aviso('#msg-perfil', 'Você entrou, mas não consegui ler o seu perfil. ' + traduzir(falha), 'bad'); }
+  else if (!linha) { $('#papel').textContent = 'Sem perfil'; aviso('#msg-perfil', 'Você entrou, mas a sua conta ainda não tem perfil no sistema. Peça ao Aprovador para cadastrá-la.', 'bad'); }
+  else if (linha.ativo === false) { $('#papel').textContent = 'Acesso desativado'; aviso('#msg-perfil', 'A sua conta está desativada. Fale com o Aprovador.', 'bad'); }
+  else { $('#papel').textContent = PAPEIS[linha.papel] || linha.papel; }
+  tela('perfil');
+}
+
+$('#ver').addEventListener('click', function () {
+  var campo = $('#senha'), mostrar = campo.type === 'password';
+  campo.type = mostrar ? 'text' : 'password';
+  $('#ver').textContent = mostrar ? 'Ocultar' : 'Mostrar';
+  $('#ver').setAttribute('aria-pressed', String(mostrar));
+});
+
+$('#v-login').addEventListener('submit', async function (ev) {
+  ev.preventDefault();
+  var email = $('#email').value.trim(), senha = $('#senha').value;
+  if (!email || !senha) { aviso('#msg-login', 'Preencha o e-mail e a senha.', 'bad'); return; }
+  $('#entrar').disabled = true; aviso('#msg-login', 'Entrando…');
+  try {
+    var d = await chamar('/auth/v1/token?grant_type=password', { metodo: 'POST', corpo: { email: email, password: senha } });
+    var sessao = { access_token: d.access_token, refresh_token: d.refresh_token, expires_at: d.expires_at || (Math.floor(Date.now() / 1000) + (d.expires_in || 3600)), user: d.user };
+    gravarSessao(sessao); $('#senha').value = ''; aviso('#msg-login', '');
+    await mostrarPerfil(sessao);
+  } catch (e) { aviso('#msg-login', traduzir(e), 'bad'); }
+  finally { $('#entrar').disabled = false; }
+});
+
+$('#f-senha').addEventListener('submit', async function (ev) {
+  ev.preventDefault();
+  var nova = $('#nova').value, conf = $('#conf').value;
+  if (nova.length < 8) { aviso('#msg-senha', 'A senha precisa ter no mínimo 8 caracteres.', 'bad'); return; }
+  if (nova !== conf) { aviso('#msg-senha', 'As duas senhas não são iguais.', 'bad'); return; }
+  $('#salvar').disabled = true; aviso('#msg-senha', 'Salvando…');
+  try {
+    var s = lerSessao(); if (!s) throw Object.assign(new Error('sessão'), { status: 401 });
+    try { await chamar('/auth/v1/user', { metodo: 'PUT', token: s.access_token, corpo: { password: nova } }); }
+    catch (e) { if (e.status === 401 && s.refresh_token) { s = await renovar(s); await chamar('/auth/v1/user', { metodo: 'PUT', token: s.access_token, corpo: { password: nova } }); } else { throw e; } }
+    $('#nova').value = ''; $('#conf').value = ''; aviso('#msg-senha', 'Senha alterada.', 'ok');
+  } catch (e) { aviso('#msg-senha', traduzir(e), 'bad'); }
+  finally { $('#salvar').disabled = false; }
+});
+
+$('#sair').addEventListener('click', async function () {
+  var s = lerSessao(); gravarSessao(null);
+  if (s) { try { await chamar('/auth/v1/logout', { metodo: 'POST', token: s.access_token }); } catch (e) { /* já saiu deste navegador */ } }
+  tela('login'); aviso('#msg-login', 'Você saiu.');
+});
+
+/* Ao abrir: o formulário já aparece e dá para clicar; a sessão guardada é conferida em segundo plano. */
+verificarConexao();
+(async function () {
+  var s = lerSessao(); if (!s || !s.access_token) return;
+  try {
+    if (s.expires_at && s.expires_at * 1000 < Date.now() + 30000 && s.refresh_token) s = await renovar(s);
+    await mostrarPerfil(s);
+  } catch (e) { gravarSessao(null); }
+})();
+</script></body></html>
