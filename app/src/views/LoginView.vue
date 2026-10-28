@@ -86,7 +86,7 @@ async function trocarModo(novo) {
       <div class="space-y-1.5">
         <h1 class="text-2xl font-semibold tracking-tight">{{ modo === 'entrar' ? 'Entrar' : 'Recuperar a senha' }}</h1>
         <p class="text-sm text-muted-foreground">
-          {{ modo === 'entrar' ? 'Use o e-mail e a senha cadastrados.' : 'Digite o seu e-mail. Enviaremos um link para você criar uma nova senha.' }}
+          {{ modo === 'entrar' ? 'Acesse com o e-mail e a senha cadastrados.' : 'Digite o seu e-mail. Enviaremos um link para você criar uma nova senha.' }}
         </p>
       </div>
 
