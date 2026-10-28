@@ -23,7 +23,7 @@ const destaques = [
     <div class="mx-auto grid min-h-dvh w-full max-w-6xl items-center gap-10 px-5 py-8 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:px-12">
       <section class="hidden lg:block">
         <p class="text-lg font-semibold tracking-tight">{{ appConfig.name }}</p>
-        <h2 class="mt-10 max-w-md text-4xl leading-tight font-semibold tracking-tight">Comunicados e pontuação em um só lugar.</h2>
+        <h2 class="mt-10 max-w-md bg-gradient-to-r from-white to-fuchsia-200 bg-clip-text text-4xl text-transparent leading-tight font-semibold tracking-tight">Comunicados e pontuação em um só lugar.</h2>
         <ul class="mt-10 space-y-6">
           <li v-for="d in destaques" :key="d.titulo" class="flex max-w-md gap-4">
             <span class="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/20 backdrop-blur"><component :is="d.icone" class="size-5" aria-hidden="true" /></span>
@@ -35,7 +35,8 @@ const destaques = [
 
       <main class="mx-auto w-full max-w-md">
         <p class="mb-6 text-center text-lg font-semibold tracking-tight lg:hidden">{{ appConfig.name }}</p>
-        <div class="rounded-3xl bg-background/95 p-6 text-foreground shadow-2xl ring-1 ring-white/30 backdrop-blur-xl sm:p-9">
+        <div class="relative overflow-hidden rounded-3xl bg-background/95 p-6 text-foreground shadow-2xl ring-1 ring-white/30 backdrop-blur-xl sm:p-9">
+          <div class="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-purple-600" aria-hidden="true" />
           <slot />
         </div>
         <p class="mt-6 text-center text-xs text-white/60 lg:hidden">Uso interno.</p>
