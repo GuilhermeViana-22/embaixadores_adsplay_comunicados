@@ -10,7 +10,6 @@ Fluxo: a pessoa cadastra o comunicado (texto, arte opcional, data e canal) → o
 | --- | --- |
 | `login/` | Tela de login em um arquivo só (`login-comunicados.html`), ligada ao Supabase. Abra direto no navegador. |
 | `pagina-oficial/` | Página do sistema (`comunicados-oficial.html`), feita para rodar dentro do Claude. Ela guarda os dados no próprio Claude e **não** usa o Supabase. |
-| `supabase/functions/admin-usuarios/` | Função segura que cria usuários e redefine senhas (só administradores). Veja `app/README.md`. |
 | `supabase/migrations/` | Comandos SQL do banco, na ordem: tabelas, segurança por linha, regras de pontuação e rankings. |
 | `app/` | **Aplicativo em Vue 3 ligado ao Supabase**: login real, todas as telas e CRUDs nas tabelas, com `.env.example`. Veja `app/README.md`. |
 
@@ -25,7 +24,7 @@ As tabelas seguem as etapas do layout:
 - Rankings: funções e quadros `ranking_mes`, `ranking_final`, `pontos_slack`, `pontos_externos`, `pontos_acoes`
 - Configurações: `users`, `colaboradores`, `colaborador_periodos`, `atualizacoes_lista`, `canais_slack`, `pontuacao_regras`
 
-Para usar o aplicativo (`app/`) em um projeto novo do Supabase, rode os arquivos de `supabase/migrations/` em ordem (001 a 007).
+Para usar o aplicativo (`app/`) em um projeto novo do Supabase, rode os arquivos de `supabase/migrations/` em ordem (001 a 008).
 
 Depois, configure o ID do canal do Slack de cada opção na tabela `canais_slack`.
 

@@ -29,7 +29,7 @@ Depois de mudar o `.env`, reinicie o `npm run dev`.
 
 ### Banco de dados
 
-Antes do primeiro uso, o banco precisa ter as tabelas: rode os arquivos de `../supabase/migrations/` em ordem (001 a 006). Detalhes no README da raiz do repositório.
+Antes do primeiro uso, o banco precisa ter as tabelas: rode os arquivos de `../supabase/migrations/` em ordem (001 a 008). Detalhes no README da raiz do repositório.
 
 ### Primeiro administrador
 
@@ -53,16 +53,16 @@ select id, 'Seu Nome', email, 'aprovador', true from auth.users where email = 's
 - O sistema **nunca fica sem administrador ativo**: o banco recusa remover, desativar ou apagar o último.
 - Aprovadores comuns e People **não** gerenciam usuários, nem pelo aplicativo nem direto no banco.
 
-#### A função segura `admin-usuarios`
+#### Como a criação de usuários funciona
 
-Criar um login exige a chave secreta do Supabase (`service_role`), que **nunca** pode ficar no navegador. Por isso criar usuário e redefinir senha passam por uma Edge Function, em `../supabase/functions/admin-usuarios/`. Ela confere o login de quem chamou e só aceita administradores ativos. Publique uma vez:
+Criar um login normalmente exige a chave secreta do Supabase, que **nunca** pode ficar no navegador. Por isso criar usuário e redefinir senha são feitos por duas funções do próprio banco (migração 008): `admin_criar_usuario` e `admin_redefinir_senha`.
 
-- Pelo terminal: `supabase functions deploy admin-usuarios --no-verify-jwt`
-- Ou pelo painel: Edge Functions, **Deploy a new function**, nome `admin-usuarios`, com o conteúdo de `index.ts` e `logic.js`. Desative a opção de verificar o JWT.
+- A **primeira coisa** que cada uma faz é conferir se quem chamou é administrador ativo. Aprovadores comuns, People e visitantes sem login são recusados.
+- A senha temporária é gerada no banco, gravada só embaralhada (bcrypt) e devolvida **uma única vez** ao administrador.
+- Redefinir a senha também **encerra as sessões abertas** da pessoa.
+- O e-mail é limpo e comparado sem diferenciar maiúsculas de minúsculas, e o banco recusa e-mail repetido.
 
-O `--no-verify-jwt` é intencional: a verificação automática da plataforma nem sempre aceita os tipos de chave mais novos, e a própria função já valida o token no servidor de login e exige administrador. A chave secreta é entregue à função pelo próprio Supabase. Não a copie para lugar nenhum.
-
-O teste da lógica roda sem rede: `node ../supabase/functions/admin-usuarios/logic.test.mjs`.
+Atenção: essas funções gravam direto nas tabelas internas do Supabase Auth (`auth.users` e `auth.identities`), o que **não é uma API oficial**. Foi testado com um login real neste projeto, mas uma mudança futura do Supabase poderia exigir ajuste. A alternativa oficial é uma Edge Function com a chave secreta; uma versão dela, com teste, está no histórico do Git (commit `50e079f`, pasta `supabase/functions/admin-usuarios`).
 
 #### E-mails do Supabase (atenção)
 
@@ -91,7 +91,7 @@ O arquivo `vercel.json` (nesta pasta) manda todas as rotas para o `index.html`. 
 | Ações de people | `acoes_people`, `acao_participantes` |
 | Ranking do mês | função `ranking_mes` |
 | Ranking final | visão `ranking_final` |
-| Usuários (só administrador) | `users`, função segura `admin-usuarios` |
+| Usuários (só administrador) | `users`, funções `admin_criar_usuario` e `admin_redefinir_senha` |
 | Configurações | `users` (só leitura), `colaboradores`, `colaborador_periodos`, `atualizacoes_lista` (funções `previa_lista_colaboradores` e `aplicar_lista_colaboradores`), `canais_slack`, `pontuacao_regras` |
 
 Os pontos são calculados no banco, não no aplicativo. Os valores de cada regra ficam em `pontuacao_regras` e podem ser mudados em Configurações, Pontuação.

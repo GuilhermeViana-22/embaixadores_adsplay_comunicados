@@ -9,7 +9,7 @@
 | Post Externo | `posts_externos` | |
 | Ações de people | `acoes_people`, `acao_participantes` | |
 | Rankings | `ranking_mes()`, `ranking_final`, `pontos_slack`, `pontos_externos`, `pontos_acoes` | Calculados no banco. |
-| Usuários | `users` (coluna `admin`), função `admin-usuarios` | Só administradores. Senha temporária gerada no servidor; troca obrigatória no primeiro acesso (marca `trocar_senha` nos metadados do login). |
+| Usuários | `users` (coluna `admin`), funções `admin_criar_usuario` e `admin_redefinir_senha` | Só administradores. Senha temporária gerada no servidor; troca obrigatória no primeiro acesso (marca `trocar_senha` nos metadados do login). |
 | Configurações | `colaboradores`, `colaborador_periodos`, `atualizacoes_lista`, `canais_slack`, `pontuacao_regras` | |
 | Arquivos | bucket `anexos` (privado) | Artes, prints e listas, até 10 MB. |
 
@@ -26,7 +26,7 @@ Cada colaborador tem períodos (`colaborador_periodos`) com mês de início e de
 
 ## Quem pode o quê
 
-- **Administrador:** é sempre também Aprovador. Cria usuários (pela função `admin-usuarios`), define o perfil de cada um (People ou Aprovador), torna ou remove administradores, ativa, desativa e redefine senhas. O banco impede ficar sem administrador ativo.
+- **Administrador:** é sempre também Aprovador. Cria usuários (pela função do banco `admin_criar_usuario`), define o perfil de cada um (People ou Aprovador), torna ou remove administradores, ativa, desativa e redefine senhas. O banco impede ficar sem administrador ativo.
 - **Aprovador:** aprova, devolve, programa e cancela posts; registra publicações; cadastra colaboradores; altera canais e pontos.
 - **People:** cria posts e edita ou apaga o próprio enquanto estiver pendente ou devolvido; registra posts externos, ações de people e interações; lê tudo.
 - Quem não tem login, ou tem login mas não tem perfil ativo em `users`, não lê nem grava nada.
