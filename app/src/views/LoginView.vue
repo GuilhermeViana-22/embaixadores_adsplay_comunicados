@@ -84,9 +84,9 @@ async function trocarModo(novo) {
 
     <form novalidate class="space-y-5" @submit.prevent="modo === 'entrar' ? entrar() : recuperar()">
       <div class="space-y-1.5">
-        <h1 class="text-2xl font-semibold tracking-tight">{{ modo === 'entrar' ? 'Entrar' : 'Recuperar a senha' }}</h1>
+        <h1 class="bg-gradient-to-r from-violet-700 to-fuchsia-600 bg-clip-text text-2xl font-semibold tracking-tight text-transparent dark:from-violet-300 dark:to-fuchsia-300">{{ modo === 'entrar' ? 'Entrar' : 'Recuperar a senha' }}</h1>
         <p class="text-sm text-muted-foreground">
-          {{ modo === 'entrar' ? 'Use o e-mail e a senha cadastrados.' : 'Digite o seu e-mail. Enviaremos um link para você criar uma nova senha.' }}
+          {{ modo === 'entrar' ? 'Acesse com o e-mail e a senha cadastrados.' : 'Digite o seu e-mail. Enviaremos um link para você criar uma nova senha.' }}
         </p>
       </div>
 
@@ -139,7 +139,7 @@ async function trocarModo(novo) {
         <span>{{ aviso }}</span>
       </div>
 
-      <Button type="submit" class="w-full" size="lg" :disabled="ocupado || !configurado">
+      <Button type="submit" class="w-full border-0 bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white shadow-lg shadow-violet-500/30 transition hover:brightness-110 hover:shadow-violet-500/50 focus-visible:ring-violet-400/60" size="lg" :disabled="ocupado || !configurado">
         <LoaderCircle v-if="ocupado" class="size-4 animate-spin" aria-hidden="true" />
         {{ modo === 'entrar' ? (ocupado ? 'Entrando…' : 'Entrar') : ocupado ? 'Enviando…' : 'Enviar link' }}
       </Button>
