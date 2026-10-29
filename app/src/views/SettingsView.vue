@@ -5,12 +5,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import RosterManager from '@/components/RosterManager.vue'
 import { permissionLabels, permissionsByRole, roleLabels } from '@/config/app'
 import { useAction } from '@/composables/useAction'
-import { canais as canaisApi, regras as regrasApi, usuarios as usuariosApi } from '@/services/api'
+import { canais as canaisApi, regras as regrasApi } from '@/services/api'
 import { useSessionStore } from '@/stores/session'
 import { colorPresets, useThemeStore } from '@/stores/theme'
 
@@ -38,7 +37,6 @@ async function salvarSenha() {
 const canais = ref([])
 const edicao = reactive({})
 const regras = ref([])
-const usuarios = ref([])
 const geral = useAction()
 const aviso = ref('')
 
@@ -48,7 +46,6 @@ async function carregar() {
     canais.value = c
     c.forEach((x) => { edicao[x.chave] = { id: x.slack_channel_id || '', nome: x.slack_channel_nome || '' } })
     regras.value = r.map((x) => ({ ...x, novo: x.pontos }))
-    if (session.isAdmin) usuarios.value = await usuariosApi.list()
   })
 }
 onMounted(carregar)
@@ -66,11 +63,6 @@ async function salvarRegra(r) {
   const x = await geral.run(() => regrasApi.update(r.chave, n))
   if (x.ok) { aviso.value = 'Pontos salvos.'; await carregar() }
 }
-async function mudarUsuario(u, patch) {
-  aviso.value = ''
-  const x = await geral.run(() => usuariosApi.update(u.id, patch))
-  if (x.ok) { await carregar(); if (u.id === session.profile.id) await session.carregarPerfil() }
-}
 </script>
 
 <template>
@@ -86,7 +78,6 @@ async function mudarUsuario(u, patch) {
         <TabsTrigger value="colaboradores">Colaboradores</TabsTrigger>
         <TabsTrigger value="canais">Canais do Slack</TabsTrigger>
         <TabsTrigger value="pontos">Pontuação</TabsTrigger>
-        <TabsTrigger v-if="session.isAdmin" value="usuarios">Usuários</TabsTrigger>
         <TabsTrigger value="aparencia">Aparência</TabsTrigger>
       </TabsList>
 
@@ -94,7 +85,7 @@ async function mudarUsuario(u, patch) {
         <Card class="max-w-xl">
           <CardHeader>
             <CardTitle>Seu perfil</CardTitle>
-            <CardDescription>Perfil atual: {{ roleLabels[session.profile.papel] }}. Nome e papel são alterados pelo Aprovador, na aba Usuários.</CardDescription>
+            <CardDescription>Perfil atual: {{ roleLabels[session.profile.papel] }}. Nome e perfil são alterados por um administrador, no menu Usuários.</CardDescription>
           </CardHeader>
           <CardContent class="space-y-4">
             <div class="space-y-2"><Label for="p-nome">Nome</Label><Input id="p-nome" :model-value="session.profile.nome" readonly /></div>
@@ -119,7 +110,7 @@ async function mudarUsuario(u, patch) {
         <Card class="max-w-3xl">
           <CardHeader>
             <CardTitle>O que cada perfil pode fazer</CardTitle>
-            <CardDescription>As regras valem no banco de dados. Para mudar o perfil de alguém, o Aprovador usa a aba Usuários.</CardDescription>
+            <CardDescription>As regras valem no banco de dados. Quem muda o perfil de alguém é o administrador, no menu Usuários.</CardDescription>
           </CardHeader>
           <CardContent class="space-y-4">
             <div v-for="(chaves, papel) in permissionsByRole" :key="papel" class="space-y-2">
@@ -137,9 +128,9 @@ async function mudarUsuario(u, patch) {
         <Card v-for="c in canais" :key="c.chave" class="max-w-3xl">
           <CardHeader><CardTitle>{{ c.nome }}</CardTitle></CardHeader>
           <CardContent class="grid gap-3 md:grid-cols-[1fr_1fr_auto] md:items-end">
-            <div class="space-y-2"><Label :for="`cid-${c.chave}`">ID do canal</Label><Input :id="`cid-${c.chave}`" v-model="edicao[c.chave].id" :disabled="!session.isAdmin" placeholder="C0123456789" /></div>
-            <div class="space-y-2"><Label :for="`cn-${c.chave}`">Nome do canal</Label><Input :id="`cn-${c.chave}`" v-model="edicao[c.chave].nome" :disabled="!session.isAdmin" placeholder="comunicados" /></div>
-            <Button v-if="session.isAdmin" :disabled="geral.ocupado.value" @click="salvarCanal(c)">Salvar</Button>
+            <div class="space-y-2"><Label :for="`cid-${c.chave}`">ID do canal</Label><Input :id="`cid-${c.chave}`" v-model="edicao[c.chave].id" :disabled="!session.isAprovador" placeholder="C0123456789" /></div>
+            <div class="space-y-2"><Label :for="`cn-${c.chave}`">Nome do canal</Label><Input :id="`cn-${c.chave}`" v-model="edicao[c.chave].nome" :disabled="!session.isAprovador" placeholder="comunicados" /></div>
+            <Button v-if="session.isAprovador" :disabled="geral.ocupado.value" @click="salvarCanal(c)">Salvar</Button>
           </CardContent>
         </Card>
       </TabsContent>
@@ -153,26 +144,9 @@ async function mudarUsuario(u, patch) {
           <CardContent class="space-y-3">
             <div v-for="r in regras" :key="r.chave" class="flex flex-wrap items-center gap-3">
               <span class="min-w-0 flex-1 text-sm">{{ r.descricao }}</span>
-              <Input v-model="r.novo" type="number" min="0" class="w-24" :disabled="!session.isAdmin" :aria-label="`Pontos: ${r.descricao}`" />
-              <Button v-if="session.isAdmin" size="sm" variant="outline" :disabled="geral.ocupado.value || Number(r.novo) === r.pontos" @click="salvarRegra(r)">Salvar</Button>
+              <Input v-model="r.novo" type="number" min="0" class="w-24" :disabled="!session.isAprovador" :aria-label="`Pontos: ${r.descricao}`" />
+              <Button v-if="session.isAprovador" size="sm" variant="outline" :disabled="geral.ocupado.value || Number(r.novo) === r.pontos" @click="salvarRegra(r)">Salvar</Button>
             </div>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent v-if="session.isAdmin" value="usuarios" class="mt-4 space-y-4">
-        <p class="text-sm text-muted-foreground">Quem tem login neste sistema. Para criar um usuário novo, crie o login no painel do Supabase (Authentication, Users) e depois cadastre a pessoa na tabela users com o mesmo id.</p>
-        <Card v-for="u in usuarios" :key="u.id" class="max-w-3xl">
-          <CardContent class="flex flex-wrap items-center gap-3">
-            <div class="min-w-0 flex-1">
-              <p class="font-medium">{{ u.nome }} <Badge v-if="!u.ativo" variant="outline">desativado</Badge></p>
-              <p class="text-sm text-muted-foreground">{{ u.email }}</p>
-            </div>
-            <Select :model-value="u.papel" :disabled="u.id === session.profile.id" @update:model-value="mudarUsuario(u, { papel: $event })">
-              <SelectTrigger class="w-40" :aria-label="`Perfil de ${u.nome}`"><SelectValue /></SelectTrigger>
-              <SelectContent><SelectItem v-for="(label, key) in roleLabels" :key="key" :value="key">{{ label }}</SelectItem></SelectContent>
-            </Select>
-            <Button v-if="u.id !== session.profile.id" size="sm" variant="outline" :disabled="geral.ocupado.value" @click="mudarUsuario(u, { ativo: !u.ativo })">{{ u.ativo ? 'Desativar' : 'Ativar' }}</Button>
           </CardContent>
         </Card>
       </TabsContent>

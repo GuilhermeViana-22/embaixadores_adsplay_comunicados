@@ -54,7 +54,7 @@ async function registrar() {
   if (r.ok) { form.value = vazio(); msg.value = `Registrado: +${pontos.value} pontos no mês da publicação.`; await carregar() }
 }
 const apagar = async (id) => { const r = await run(() => extApi.remove(id)); if (r.ok) await carregar() }
-const pode = (x) => session.isAdmin || x.criado_por_id === session.profile.id
+const pode = (x) => session.isAprovador || x.criado_por_id === session.profile.id
 const pontua = (x) => { const c = nomeDe(x.colaborador_id); return c ? ativoEm(c, x.data_publicacao) : false }
 </script>
 

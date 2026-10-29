@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import { CalendarClock, FilePlus2, Share2, Send, Settings, Sparkles, Trophy, Crown } from '@lucide/vue'
+import { CalendarClock, FilePlus2, Share2, Send, Settings, Sparkles, Trophy, Crown, Users } from '@lucide/vue'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,6 +20,7 @@ const menu = [
   { to: '/acoes', label: 'Ações de people', icon: Sparkles },
   { to: '/ranking-mes', label: 'Ranking do mês', icon: Trophy },
   { to: '/ranking-final', label: 'Ranking final', icon: Crown },
+  { to: '/usuarios', label: 'Usuários', icon: Users, soAdmin: true },
   { to: '/configuracoes', label: 'Configurações', icon: Settings },
 ]
 
@@ -36,7 +37,7 @@ async function logout() {
       <p class="mb-4 text-lg font-semibold tracking-tight md:mb-6">{{ appConfig.name }}</p>
       <nav class="flex gap-1 overflow-x-auto md:flex-col" aria-label="Menu principal">
         <RouterLink
-          v-for="item in menu"
+          v-for="item in menu.filter((i) => !i.soAdmin || session.isAdmin)"
           :key="item.to"
           :to="item.to"
           class="flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-sm whitespace-nowrap hover:bg-sidebar-accent"
@@ -49,6 +50,7 @@ async function logout() {
     </aside>
     <div class="flex min-w-0 flex-1 flex-col">
       <header class="flex flex-wrap items-center justify-end gap-3 border-b p-4">
+        <Badge v-if="session.isAdmin" variant="default">Admin</Badge>
         <Badge v-if="session.profile" variant="secondary">{{ roleLabels[session.profile.papel] }}</Badge>
         <span class="text-sm text-muted-foreground">{{ session.profile?.nome }}</span>
         <Avatar>

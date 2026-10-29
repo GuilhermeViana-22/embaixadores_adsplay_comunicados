@@ -75,7 +75,7 @@ function devolver(post) {
   return acao(post, () => postsApi.devolver(post.id, motivo))
 }
 const excluir = (post) => acao(post, () => postsApi.remove(post.id))
-const podeExcluir = (post) => session.isAdmin || post.autor_id === session.profile.id
+const podeExcluir = (post) => session.isAprovador || post.autor_id === session.profile.id
 </script>
 
 <template>

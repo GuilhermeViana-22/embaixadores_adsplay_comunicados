@@ -72,7 +72,7 @@ const remover = async (id) => { const r = await run(() => interApi.remove(id)); 
         <span class="font-semibold">{{ contagem(post).c }}</span> {{ contagem(post).c === 1 ? 'comentário' : 'comentários' }} e
         <span class="font-semibold">{{ contagem(post).r }}</span> {{ contagem(post).r === 1 ? 'reação' : 'reações' }} no prazo
       </p>
-      <InteractionHistory :itens="itens(post)" :removivel="session.isAdmin" @remove="remover" />
+      <InteractionHistory :itens="itens(post)" :removivel="session.isAprovador" @remove="remover" />
       <LogInteractionDialog v-if="session.can('register_interaction')" :post="post" :colaboradores="ativos" @saved="carregar" />
     </PostCard>
   </div>

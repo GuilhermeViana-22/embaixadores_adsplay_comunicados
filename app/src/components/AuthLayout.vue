@@ -2,8 +2,7 @@
 import { CalendarClock, ShieldCheck, Trophy } from '@lucide/vue'
 import { appConfig } from '@/config/app'
 
-// Moldura das telas de entrada: fundo em gradiente roxo, painel da marca (só em telas grandes)
-// e um cartão com o formulário. Só há login: contas são criadas pelo Aprovador.
+// Moldura das telas de entrada: painel da marca (só em telas grandes) e área do formulário.
 const destaques = [
   { icone: CalendarClock, titulo: 'Comunicados com aprovação', texto: 'Crie, aprove e programe cada post com data e horário.' },
   { icone: Trophy, titulo: 'Rankings do mês e final', texto: 'Comentários, reações, posts externos e ações de people viram pontos.' },
@@ -12,35 +11,31 @@ const destaques = [
 </script>
 
 <template>
-  <div
-    class="relative isolate min-h-dvh overflow-hidden text-white"
-    style="background: radial-gradient(120% 90% at 0% 0%, #7c3aed 0%, transparent 55%), radial-gradient(100% 80% at 100% 100%, #c026d3 0%, transparent 55%), linear-gradient(135deg, #2e1065 0%, #4c1d95 45%, #5b21b6 100%)"
-  >
-    <div class="pointer-events-none absolute -top-32 -left-24 -z-10 size-96 rounded-full bg-violet-400/30 blur-3xl" aria-hidden="true" />
-    <div class="pointer-events-none absolute -right-24 -bottom-40 -z-10 size-[28rem] rounded-full bg-fuchsia-500/25 blur-3xl" aria-hidden="true" />
-    <div class="pointer-events-none absolute inset-0 -z-10 opacity-[0.07]" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 22px 22px" aria-hidden="true" />
-
-    <div class="mx-auto grid min-h-dvh w-full max-w-6xl items-center gap-10 px-5 py-8 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:px-12">
-      <section class="hidden lg:block">
-        <p class="text-lg font-semibold tracking-tight">{{ appConfig.name }}</p>
-        <h2 class="mt-10 max-w-md bg-gradient-to-r from-white to-fuchsia-200 bg-clip-text text-4xl text-transparent leading-tight font-semibold tracking-tight">Comunicados e pontuação em um só lugar.</h2>
-        <ul class="mt-10 space-y-6">
-          <li v-for="d in destaques" :key="d.titulo" class="flex max-w-md gap-4">
-            <span class="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/20 backdrop-blur"><component :is="d.icone" class="size-5" aria-hidden="true" /></span>
-            <span><span class="block font-medium">{{ d.titulo }}</span><span class="block text-sm text-white/75">{{ d.texto }}</span></span>
+  <div class="grid min-h-screen bg-background text-foreground lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+    <aside
+      class="relative hidden flex-col justify-between overflow-hidden p-12 text-primary-foreground lg:flex"
+      style="background: linear-gradient(145deg, var(--primary) 0%, color-mix(in oklab, var(--primary) 60%, var(--background)) 100%)"
+    >
+      <div class="absolute -top-24 -right-24 size-80 rounded-full bg-white/15 blur-2xl" aria-hidden="true" />
+      <div class="absolute -bottom-32 -left-16 size-96 rounded-full bg-white/10 blur-3xl" aria-hidden="true" />
+      <p class="relative text-lg font-semibold tracking-tight">{{ appConfig.name }}</p>
+      <div class="relative space-y-8">
+        <h2 class="max-w-sm text-3xl leading-tight font-semibold tracking-tight">Comunicados e pontuação em um só lugar.</h2>
+        <ul class="space-y-5">
+          <li v-for="d in destaques" :key="d.titulo" class="flex max-w-sm gap-3">
+            <span class="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/25"><component :is="d.icone" class="size-5" aria-hidden="true" /></span>
+            <span><span class="block font-medium">{{ d.titulo }}</span><span class="block text-sm opacity-80">{{ d.texto }}</span></span>
           </li>
         </ul>
-        <p class="mt-14 text-xs text-white/60">Uso interno.</p>
-      </section>
+      </div>
+      <p class="relative text-xs opacity-70">Uso interno.</p>
+    </aside>
 
-      <main class="mx-auto w-full max-w-md">
-        <p class="mb-6 text-center text-lg font-semibold tracking-tight lg:hidden">{{ appConfig.name }}</p>
-        <div class="relative overflow-hidden rounded-3xl bg-background/95 p-6 text-foreground shadow-2xl ring-1 ring-white/30 backdrop-blur-xl sm:p-9">
-          <div class="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-purple-600" aria-hidden="true" />
-          <slot />
-        </div>
-        <p class="mt-6 text-center text-xs text-white/60 lg:hidden">Uso interno.</p>
-      </main>
-    </div>
+    <main class="flex items-center justify-center p-6 sm:p-10">
+      <div class="w-full max-w-sm">
+        <p class="mb-8 text-lg font-semibold tracking-tight lg:hidden">{{ appConfig.name }}</p>
+        <slot />
+      </div>
+    </main>
   </div>
 </template>

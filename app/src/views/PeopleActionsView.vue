@@ -45,7 +45,7 @@ function pontuam(a) {
   return a.participantes.filter((id) => { const c = colabs.value.find((x) => x.id === id); return c && ativoEm(c, mes) })
 }
 const apagar = async (id) => { const r = await run(() => acoesApi.remove(id)); if (r.ok) await carregar() }
-const pode = (a) => session.isAdmin || a.registrado_por_id === session.profile.id
+const pode = (a) => session.isAprovador || a.registrado_por_id === session.profile.id
 </script>
 
 <template>

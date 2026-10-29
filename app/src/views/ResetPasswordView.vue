@@ -30,7 +30,7 @@ async function salvar() {
   const r = await run(() => session.trocarSenha(nova.value))
   if (!r.ok) return
   await session.carregarPerfil()
-  router.push(session.logado ? '/criacao' : '/login')
+  router.push(session.logado ? '/criacao' : '/entrar')
 }
 </script>
 
@@ -41,7 +41,7 @@ async function salvar() {
     <div v-else-if="!session.user" class="space-y-4">
       <h1 class="text-2xl font-semibold tracking-tight">Link inválido ou vencido</h1>
       <p class="text-sm text-muted-foreground">Este link de recuperação não funciona mais. Peça um novo na tela de entrada, em “Esqueci minha senha”.</p>
-      <Button class="w-full" size="lg" @click="router.push('/login')">Ir para o login</Button>
+      <Button class="w-full" size="lg" @click="router.push('/entrar')">Ir para o login</Button>
     </div>
 
     <form v-else novalidate class="space-y-5" @submit.prevent="salvar">

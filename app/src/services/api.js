@@ -37,10 +37,27 @@ export const regras = {
   update: (chave, pontos) => ok(cliente().from('pontuacao_regras').update({ pontos }).eq('chave', chave).select().single()),
 }
 
+// Criar login exige a chave secreta do projeto, que nunca pode ficar no navegador.
+// Por isso essas duas ações passam pela função segura "admin-usuarios", que só aceita administradores.
+async function chamarFuncao(nome, corpo) {
+  const { data, error } = await cliente().functions.invoke(nome, { body: corpo })
+  if (error) {
+    let msg = ''
+    try { const ctx = error.context; if (ctx && typeof ctx.json === 'function') msg = (await ctx.json()).erro || '' } catch { /* sem corpo legível */ }
+    if (!msg && error.context && error.context.status === 404) throw new Error('A função de usuários não está publicada no Supabase. Peça a quem administra o projeto para publicar a função admin-usuarios.')
+    throw msg ? new Error(msg) : friendly(error)
+  }
+  return data
+}
+
 export const usuarios = {
   get: (id) => ok(cliente().from('users').select('*').eq('id', id).maybeSingle()),
   list: () => ok(cliente().from('users').select('*').order('nome')),
+  // Só o administrador altera (regra do banco). Ex.: { papel: 'aprovador' }, { ativo: false }, { admin: true, papel: 'aprovador' }.
   update: (id, patch) => ok(cliente().from('users').update(patch).eq('id', id).select().single()),
+  // Cria o login e o perfil; devolve { usuario, senhaTemporaria }. A senha só aparece nesta resposta.
+  criar: ({ nome, email, papel, admin }) => chamarFuncao('admin-usuarios', { acao: 'criar', nome, email, papel, admin: Boolean(admin) }),
+  redefinirSenha: (id) => chamarFuncao('admin-usuarios', { acao: 'redefinir_senha', id }),
 }
 
 /* ---------- Colaboradores (lista de ativos, com histórico de períodos) ---------- */

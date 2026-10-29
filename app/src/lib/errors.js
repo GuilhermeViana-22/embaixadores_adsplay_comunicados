@@ -4,6 +4,8 @@ export function friendly(e) {
   const code = String((e && (e.code || e.error_code)) || '')
   let t
   if (/failed to fetch|networkerror|load failed|network request failed/i.test(msg)) t = 'Sem conexão com o servidor. Confira a internet e tente de novo.'
+  else if (/failed to send a request to the edge function|function not found|relay error/i.test(msg)) t = 'Não consegui falar com a função de usuários. Confira a internet. Se continuar, ela pode não estar publicada no Supabase.'
+  else if (/non-2xx/i.test(msg)) t = 'A função de usuários respondeu com erro. Tente de novo em instantes.'
   else if (code === 'invalid_credentials' || /invalid login credentials/i.test(msg)) t = 'E-mail ou senha incorretos.'
   else if (code === 'email_not_confirmed' || /email not confirmed/i.test(msg)) t = 'Este e-mail ainda não foi confirmado.'
   else if (code === 'over_request_rate_limit' || /rate limit|too many/i.test(msg)) t = 'Muitas tentativas. Aguarde um pouco e tente de novo.'

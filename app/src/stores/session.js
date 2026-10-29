@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { permissionsByRole } from '@/config/app'
+import { adminExtra, permissionsByRole } from '@/config/app'
 import { friendly } from '@/lib/errors'
 import { MENSAGEM_SEM_CONFIG, supabase } from '@/lib/supabase'
 import { usuarios } from '@/services/api'
@@ -14,9 +14,13 @@ export const useSessionStore = defineStore('session', () => {
   let iniciando = null
 
   const logado = computed(() => Boolean(user.value && profile.value && profile.value.ativo))
-  const isAdmin = computed(() => logado.value && profile.value.papel === 'aprovador')
+  const isAprovador = computed(() => logado.value && profile.value.papel === 'aprovador')
+  // Administrador: único que cria e gerencia usuários (sempre é Aprovador também).
+  const isAdmin = computed(() => logado.value && profile.value.admin === true)
+  // Quem foi criado pelo administrador entra com uma senha temporária e precisa trocá-la.
+  const precisaTrocarSenha = computed(() => Boolean(user.value && user.value.user_metadata && user.value.user_metadata.trocar_senha === true))
   // Só mostra ou esconde botões; quem de fato bloqueia é o banco.
-  const can = (key) => logado.value && (permissionsByRole[profile.value.papel] || []).includes(key)
+  const can = (key) => logado.value && ((permissionsByRole[profile.value.papel] || []).includes(key) || (isAdmin.value && adminExtra.includes(key)))
 
   async function carregarPerfil() {
     profile.value = null
@@ -75,10 +79,12 @@ export const useSessionStore = defineStore('session', () => {
     if (error) throw friendly(error)
   }
 
+  // Troca a senha e tira a marca de "senha temporária".
   async function trocarSenha(nova) {
-    const { error } = await supabase.auth.updateUser({ password: nova })
+    const { data, error } = await supabase.auth.updateUser({ password: nova, data: { trocar_senha: false } })
     if (error) throw friendly(error)
+    if (data && data.user) user.value = data.user
   }
 
-  return { user, profile, ready, erro, logado, isAdmin, can, init, entrar, sair, recuperarSenha, trocarSenha, carregarPerfil }
+  return { user, profile, ready, erro, logado, isAprovador, isAdmin, precisaTrocarSenha, can, init, entrar, sair, recuperarSenha, trocarSenha, carregarPerfil }
 })

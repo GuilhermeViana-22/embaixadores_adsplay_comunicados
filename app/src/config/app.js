@@ -19,10 +19,13 @@ export const permissionLabels = {
   register_external: 'Registrar posts externos',
   register_action: 'Registrar ações de people',
   manage_roster: 'Cadastrar colaboradores ativos',
-  manage_settings: 'Alterar canais, pontos e usuários',
+  manage_settings: 'Alterar canais e pontos',
+  manage_users: 'Criar usuários e definir quem é People, Aprovador ou administrador',
 }
 const people = ['view', 'create_post', 'register_interaction', 'register_external', 'register_action']
 export const permissionsByRole = {
   people,
   aprovador: [...people, 'approve_post', 'manage_roster', 'manage_settings'],
 }
+// O administrador é um Aprovador com a permissão extra de gerenciar usuários.
+export const adminExtra = ['manage_users']
